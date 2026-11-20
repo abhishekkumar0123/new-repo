@@ -36,6 +36,17 @@ create table if not exists public.social_links (
   icon text, visible boolean not null default true, display_order integer not null default 0
 );
 
+create table if not exists public.projects (
+  id uuid primary key default gen_random_uuid(), title text not null, slug text unique not null,
+  case_id text, short_description text, report text, objective text, environment text,
+  tools text[] not null default '{}', evidence text, findings text, process text, lessons text,
+  github_url text, live_url text, category text, difficulty text,
+  featured boolean not null default false,
+  status text not null default 'draft' check (status in ('draft','published','archived')),
+  is_demo boolean not null default false, display_order integer not null default 0,
+  created_at timestamptz not null default now(), updated_at timestamptz not null default now()
+);
+
 create table if not exists public.project_images (
   id uuid primary key default gen_random_uuid(), project_id uuid not null references public.projects(id) on delete cascade,
   media_url text not null, alt text, display_order integer not null default 0
@@ -58,6 +69,7 @@ alter table public.certifications enable row level security;
 alter table public.lab_entries enable row level security;
 alter table public.timeline_entries enable row level security;
 alter table public.social_links enable row level security;
+alter table public.projects enable row level security;
 alter table public.project_images enable row level security;
 alter table public.media_assets enable row level security;
 alter table public.contact_messages enable row level security;
@@ -98,9 +110,22 @@ drop policy if exists "admins manage timeline" on public.timeline_entries;
 create policy "admins manage timeline" on public.timeline_entries for all using (public.is_admin()) with check (public.is_admin());
 drop policy if exists "admins manage links" on public.social_links;
 create policy "admins manage links" on public.social_links for all using (public.is_admin()) with check (public.is_admin());
+drop policy if exists "admins manage projects" on public.projects;
+create policy "admins manage projects" on public.projects for all using (public.is_admin()) with check (public.is_admin());
 drop policy if exists "admins manage project images" on public.project_images;
 create policy "admins manage project images" on public.project_images for all using (public.is_admin()) with check (public.is_admin());
 drop policy if exists "admins manage media" on public.media_assets;
 create policy "admins manage media" on public.media_assets for all using (public.is_admin()) with check (public.is_admin());
 drop policy if exists "admins manage messages" on public.contact_messages;
 create policy "admins manage messages" on public.contact_messages for select using (public.is_admin());
+
+create or replace function public.is_admin()
+returns boolean
+language sql
+stable
+security definer
+set search_path = public
+as $$
+  select lower(coalesce(auth.jwt()->>'email', '')) = 'abhishekkumar.ak0123@gmail.com';
+$$;
+grant execute on function public.is_admin() to authenticated;
