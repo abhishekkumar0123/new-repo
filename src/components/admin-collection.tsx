@@ -231,6 +231,43 @@ export function AdminCollection({
             display_order: 3,
           },
         ]);
+      } else if (loadedRows.length === 0 && table === "writeups") {
+        setRows([
+          {
+            _fallback: true,
+            title: "Lab walkthrough template",
+            slug: "lab-walkthrough-template",
+            summary:
+              "A template for documenting lab setup, commands, evidence, and findings.",
+            content: "Add your detailed lab walkthrough here.",
+            category: "Lab walkthrough",
+            status: "draft",
+            is_demo: true,
+            display_order: 1,
+          },
+          {
+            _fallback: true,
+            title: "Security investigation notes",
+            slug: "security-investigation-notes",
+            summary: "Structured notes for investigations and alert analysis.",
+            content: "Add your security investigation notes here.",
+            category: "Security investigation",
+            status: "draft",
+            is_demo: true,
+            display_order: 2,
+          },
+          {
+            _fallback: true,
+            title: "Tool tutorial",
+            slug: "tool-tutorial",
+            summary: "A learning summary for security tools and workflows.",
+            content: "Add your tool tutorial here.",
+            category: "Tool tutorial",
+            status: "draft",
+            is_demo: true,
+            display_order: 3,
+          },
+        ]);
       } else if (loadedRows.length === 0 && table === "skills") {
         setRows([
           {
@@ -362,6 +399,10 @@ export function AdminCollection({
       mutation = existingSkill?.id
         ? supabase.from("skills").update(allowed).eq("id", existingSkill.id)
         : supabase.from("skills").insert(allowed);
+    } else if (table === "writeups" && editor._fallback === true) {
+      mutation = supabase
+        .from("writeups")
+        .upsert(allowed, { onConflict: "slug" });
     } else {
       mutation =
         editor.id !== undefined

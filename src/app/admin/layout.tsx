@@ -15,8 +15,11 @@ import {
   Images,
   Settings,
   UserRound,
+  Sun,
+  Moon,
 } from "lucide-react";
 import { AdminLogout } from "@/components/admin-logout";
+import { useEffect, useState } from "react";
 
 const links = [
   ["Overview", "/admin", LayoutDashboard],
@@ -52,8 +55,31 @@ export default function AdminLayout({
 }
 
 function AdminShell({ children }: { children: React.ReactNode }) {
+  const [theme, setTheme] = useState<"dark" | "light">("dark");
+
+  useEffect(() => {
+    const saved = window.localStorage.getItem("admin-theme");
+    if (saved === "light" || saved === "dark") setTheme(saved);
+  }, []);
+
+  function toggleTheme() {
+    const next = theme === "dark" ? "light" : "dark";
+    setTheme(next);
+    window.localStorage.setItem("admin-theme", next);
+  }
+
+  useEffect(() => {
+    const root = window.document.documentElement;
+    root.classList.remove(theme === "light" ? "dark" : "light");
+    root.classList.add(theme === "dark" ? "dark" : "light");
+    return () => root.classList.remove("dark", "light");
+  }, [theme]);
+
   return (
-    <div className="min-h-screen bg-[#090c0b] lg:grid lg:grid-cols-[240px_1fr]">
+    <div
+      data-admin-theme={theme}
+      className="admin-dashboard min-h-screen lg:grid lg:grid-cols-[240px_1fr]"
+    >
       <aside className="border-b border-white/[0.07] bg-[#0d1310] lg:min-h-screen lg:border-b-0 lg:border-r">
         <div className="flex h-[72px] items-center border-b border-white/[0.07] px-5">
           <Link
@@ -84,7 +110,22 @@ function AdminShell({ children }: { children: React.ReactNode }) {
           <p className="font-mono text-[10px] uppercase tracking-[.18em] text-[#77847e]">
             Private administration
           </p>
-          <AdminLogout />
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={toggleTheme}
+              aria-label={
+                theme === "dark"
+                  ? "Switch to light theme"
+                  : "Switch to dark theme"
+              }
+              title={theme === "dark" ? "Light theme" : "Dark theme"}
+              className="grid size-9 place-items-center border border-white/[0.08] text-[#9ba8a1] transition hover:border-[#00ff91]/40 hover:text-[#00ff91]"
+            >
+              {theme === "dark" ? <Sun size={15} /> : <Moon size={15} />}
+            </button>
+            <AdminLogout />
+          </div>
         </header>
         <div className="p-5 lg:p-8">{children}</div>
       </section>
