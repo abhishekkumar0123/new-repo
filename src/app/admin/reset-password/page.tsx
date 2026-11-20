@@ -1,5 +1,6 @@
 "use client";
 
+import { withBasePath } from "@/lib/base-path";
 import { createSupabaseBrowser } from "@/lib/supabase/browser";
 import { FormEvent, useState } from "react";
 
@@ -42,7 +43,7 @@ export default function ResetPasswordPage() {
     }
 
     setSuccess("Password updated. Redirecting to the dashboard...");
-    window.location.assign("/admin");
+    window.location.assign(withBasePath("/admin"));
   }
 
   return (

@@ -1,7 +1,7 @@
-import { createSupabaseServer } from "@/lib/supabase/server";
+import { createSupabaseBrowser } from "@/lib/supabase/browser";
 
 export async function getPortfolioData() {
-  const supabase = await createSupabaseServer();
+  const supabase = createSupabaseBrowser();
   if (!supabase) return null;
 
   const [profile, sections, categories, skills, projects, writeups, certifications, labs, timeline, links, settings] = await Promise.all([

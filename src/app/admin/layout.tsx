@@ -1,4 +1,8 @@
+"use client";
+
 import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { AdminGuard } from "@/components/admin-guard";
 import {
   LayoutDashboard,
   FolderKanban,
@@ -33,6 +37,15 @@ export default function AdminLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const pathname = usePathname();
+  if (pathname === "/admin/login" || pathname === "/admin/reset-password") {
+    return <>{children}</>;
+  }
+
+  return <AdminGuard>{<AdminShell>{children}</AdminShell>}</AdminGuard>;
+}
+
+function AdminShell({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen bg-[#090c0b] lg:grid lg:grid-cols-[240px_1fr]">
       <aside className="border-b border-white/[0.07] bg-[#0d1310] lg:min-h-screen lg:border-b-0 lg:border-r">
