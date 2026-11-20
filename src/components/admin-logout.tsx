@@ -1,13 +1,14 @@
 "use client";
 
 import { createSupabaseBrowser } from "@/lib/supabase/browser";
+import { withBasePath } from "@/lib/base-path";
 import { LogOut } from "lucide-react";
 
 export function AdminLogout() {
   async function logout() {
     const supabase = createSupabaseBrowser();
     if (supabase) await supabase.auth.signOut();
-    window.location.href = "/admin/login";
+    window.location.href = withBasePath("/admin/login");
   }
   return (
     <button

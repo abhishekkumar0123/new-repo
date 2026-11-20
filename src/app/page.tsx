@@ -1,4 +1,7 @@
+"use client";
+
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import { SiteHeader } from "@/components/site-header";
 import { Hero } from "@/components/hero";
 import {
@@ -71,8 +74,17 @@ const projects = [
   },
 ];
 
-export default async function Home() {
-  const portfolio = await getPortfolioData();
+export default function Home() {
+  const [portfolio, setPortfolio] = useState<Awaited<
+    ReturnType<typeof getPortfolioData>
+  > | null>(null);
+
+  useEffect(() => {
+    void getPortfolioData()
+      .then(setPortfolio)
+      .catch(() => setPortfolio(null));
+  }, []);
+
   const liveProjects = portfolio?.projects?.length
     ? portfolio.projects.map((project: Record<string, unknown>) => ({
         id: String(project.slug || project.id),
@@ -265,7 +277,7 @@ export default async function Home() {
                       {project.description}
                     </p>
                     <Link
-                      href={`/projects/${project.id.toLowerCase()}`}
+                      href={`/projects/?slug=${encodeURIComponent(project.id)}`}
                       className="mt-6 inline-flex items-center gap-2 font-mono text-xs text-[#00ff91]"
                     >
                       Open case file <ArrowUpRight size={14} />
@@ -289,24 +301,46 @@ export default async function Home() {
             Writeups &amp; learning notes
           </h2>
           <div className="mt-10 grid gap-4 md:grid-cols-3">
-            <div className="glass-panel p-6">
-              <BookOpen className="text-[#00ff91]" />
-              <p className="mt-5 text-sm text-[#9ba8a1]">
-                Lab walkthrough template and CTF notes will appear here.
-              </p>
-            </div>
-            <div className="glass-panel p-6">
-              <SearchCheck className="text-[#00ff91]" />
-              <p className="mt-5 text-sm text-[#9ba8a1]">
-                Security investigations can be published through the CMS.
-              </p>
-            </div>
-            <div className="glass-panel p-6">
-              <FileBadge className="text-[#00ff91]" />
-              <p className="mt-5 text-sm text-[#9ba8a1]">
-                Tool tutorials and learning summaries are supported.
-              </p>
-            </div>
+            {portfolio?.writeups?.length ? (
+              portfolio.writeups
+                .slice(0, 3)
+                .map((writeup: Record<string, unknown>) => (
+                  <Link
+                    key={String(writeup.id)}
+                    href={`/writeups/?slug=${encodeURIComponent(String(writeup.slug))}`}
+                    className="glass-panel p-6 transition hover:-translate-y-1 hover:border-[#00ff91]/30"
+                  >
+                    <BookOpen className="text-[#00ff91]" />
+                    <h3 className="mt-5 font-semibold">
+                      {String(writeup.title)}
+                    </h3>
+                    <p className="mt-3 text-sm text-[#9ba8a1]">
+                      {String(writeup.summary || "Published learning note.")}
+                    </p>
+                  </Link>
+                ))
+            ) : (
+              <>
+                <div className="glass-panel p-6">
+                  <BookOpen className="text-[#00ff91]" />
+                  <p className="mt-5 text-sm text-[#9ba8a1]">
+                    Lab walkthrough template and CTF notes will appear here.
+                  </p>
+                </div>
+                <div className="glass-panel p-6">
+                  <SearchCheck className="text-[#00ff91]" />
+                  <p className="mt-5 text-sm text-[#9ba8a1]">
+                    Security investigations can be published through the CMS.
+                  </p>
+                </div>
+                <div className="glass-panel p-6">
+                  <FileBadge className="text-[#00ff91]" />
+                  <p className="mt-5 text-sm text-[#9ba8a1]">
+                    Tool tutorials and learning summaries are supported.
+                  </p>
+                </div>
+              </>
+            )}
           </div>
         </div>
       </section>

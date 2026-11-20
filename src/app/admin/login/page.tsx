@@ -2,6 +2,7 @@
 
 import { createSupabaseBrowser } from "@/lib/supabase/browser";
 import { FormEvent, useEffect, useState } from "react";
+import { withBasePath } from "@/lib/base-path";
 
 export default function AdminLogin() {
   const [error, setError] = useState("");
@@ -40,7 +41,9 @@ export default function AdminLogin() {
       const { error: resetError } = await supabase.auth.resetPasswordForEmail(
         email,
         {
-          redirectTo: `${window.location.origin}/auth/callback?next=/admin/reset-password`,
+          redirectTo: `${window.location.origin}${withBasePath("/auth/callback")}?next=${encodeURIComponent(
+            withBasePath("/admin/reset-password"),
+          )}`,
         },
       );
       setLoading(false);
@@ -67,7 +70,7 @@ export default function AdminLogin() {
       return;
     }
 
-    window.location.assign("/admin");
+    window.location.assign(withBasePath("/admin"));
   }
 
   return (
