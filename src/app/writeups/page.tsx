@@ -1,23 +1,29 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
-import { createSupabaseServer } from "@/lib/supabase/server";
+import { createSupabaseBrowser } from "@/lib/supabase/browser";
 
-export default async function WriteupPage({
-  params,
-}: {
-  params: Promise<{ slug: string }>;
-}) {
-  const { slug } = await params;
-  const supabase = await createSupabaseServer();
-  const live = supabase
-    ? await supabase
-        .from("writeups")
-        .select("*")
-        .eq("slug", slug)
-        .eq("status", "published")
-        .maybeSingle()
-    : { data: null };
-  const writeup = live.data as Record<string, unknown> | null;
+export default function WriteupPage() {
+  const [writeup, setWriteup] = useState<Record<string, unknown> | null>(null);
+
+  useEffect(() => {
+    const value =
+      new URLSearchParams(window.location.search).get("slug") ||
+      "sample-writeup";
+    const supabase = createSupabaseBrowser();
+    if (!supabase) return;
+    void supabase
+      .from("writeups")
+      .select("*")
+      .eq("slug", value)
+      .eq("status", "published")
+      .maybeSingle()
+      .then(({ data }) =>
+        setWriteup((data as Record<string, unknown> | null) ?? null),
+      );
+  }, []);
 
   return (
     <main className="min-h-screen px-5 pb-20 pt-28 lg:px-8">

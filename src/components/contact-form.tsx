@@ -2,6 +2,7 @@
 
 import { FormEvent, useState } from "react";
 import { Send } from "lucide-react";
+import { createSupabaseBrowser } from "@/lib/supabase/browser";
 
 export function ContactForm() {
   const [status, setStatus] = useState("");
@@ -13,15 +14,64 @@ export function ContactForm() {
     setStatus("");
     const form = event.currentTarget;
     const data = Object.fromEntries(new FormData(form).entries());
-    const response = await fetch("/api/contact", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
-    });
-    const body = await response.json();
+    const name = String(data.name ?? "").trim();
+    const email = String(data.email ?? "").trim();
+    const subject = String(data.subject ?? "").trim();
+    const message = String(data.message ?? "").trim();
+    const website = String(data.website ?? "").trim();
+
+    if (website) {
+      setLoading(false);
+      setStatus("Message sent successfully.");
+      form.reset();
+      return;
+    }
+    if (
+      name.length < 2 ||
+      name.length > 100 ||
+      email.length < 3 ||
+      email.length > 254 ||
+      message.length < 10 ||
+      message.length > 5000
+    ) {
+      setLoading(false);
+      setStatus("Please check the form fields.");
+      return;
+    }
+
+    try {
+      const raw = sessionStorage.getItem("contact-throttle");
+      const record = raw
+        ? (JSON.parse(raw) as { count: number; resetAt: number })
+        : null;
+      const now = Date.now();
+      if (record && record.resetAt > now && record.count >= 5) {
+        setLoading(false);
+        setStatus("Too many submissions. Please try again later.");
+        return;
+      }
+      sessionStorage.setItem(
+        "contact-throttle",
+        JSON.stringify(
+          record && record.resetAt > now
+            ? { count: record.count + 1, resetAt: record.resetAt }
+            : { count: 1, resetAt: now + 10 * 60 * 1000 },
+        ),
+      );
+    } catch {}
+
+    const supabase = createSupabaseBrowser();
+    if (!supabase) {
+      setLoading(false);
+      setStatus("Contact service is not configured.");
+      return;
+    }
+    const { error } = await supabase
+      .from("contact_messages")
+      .insert({ name, email, subject, message });
     setLoading(false);
-    if (!response.ok) {
-      setStatus(body.error || "Unable to send message.");
+    if (error) {
+      setStatus("Unable to submit the message.");
       return;
     }
     form.reset();
