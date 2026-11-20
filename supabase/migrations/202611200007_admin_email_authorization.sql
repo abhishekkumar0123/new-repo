@@ -1,6 +1,33 @@
 -- Permanent authorization for the portfolio administrator.
 -- Authentication is still verified by Supabase; only this exact email is admitted.
 
+create table if not exists public.admin_users (
+  user_id uuid primary key references auth.users(id) on delete cascade,
+  email text not null,
+  role text not null default 'admin' check (role = 'admin'),
+  created_at timestamptz not null default now()
+);
+
+alter table public.admin_users enable row level security;
+
+update public.admin_users set role = 'admin' where role = 'editor';
+
+alter table public.admin_users
+  drop constraint if exists admin_users_role_check;
+
+alter table public.admin_users
+  add constraint admin_users_role_check check (role = 'admin');
+
+create unique index if not exists admin_users_single_admin
+  on public.admin_users ((role));
+
+drop policy if exists "admin_users own row" on public.admin_users;
+create policy "admin_users own row"
+  on public.admin_users
+  for select
+  to authenticated
+  using (user_id = auth.uid());
+
 create or replace function public.is_admin()
 returns boolean
 language sql
