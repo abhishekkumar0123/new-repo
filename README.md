@@ -58,12 +58,17 @@ The initial public content is placeholder or sample content where appropriate. I
 
 The site exports to `out/` with repository base path `/new-repo`. GitHub Actions builds pull requests and deploys pushes to `main` (and manual dispatch). Configure the repository as a GitHub Pages source using GitHub Actions.
 
-Set these GitHub Actions secrets:
+Set these as GitHub Actions Secrets (recommended) or repository Actions Variables:
 
-- `NEXT_PUBLIC_SUPABASE_URL`
-- `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+- `NEXT_PUBLIC_SUPABASE_URL` — the Supabase project URL.
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY` — the Supabase publishable key or legacy anon key.
 
-Never configure or expose a Supabase service-role key in this repository or GitHub Actions secrets used by the browser.
+The workflow accepts Secrets first, then Actions Variables. Do not add a service-role key.
+
+In Supabase Auth URL Configuration, add the GitHub Pages callback:
+
+- `https://abhishekkumar0123.github.io/new-repo/auth/callback/`
+- `https://abhishekkumar0123.github.io/new-repo/admin/reset-password/`
 
 ## Static hosting limitations
 

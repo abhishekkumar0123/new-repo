@@ -1,6 +1,9 @@
 "use client";
 
-import { createSupabaseBrowser } from "@/lib/supabase/browser";
+import {
+  createSupabaseBrowser,
+  getSupabaseConfigError,
+} from "@/lib/supabase/browser";
 import { FormEvent, useEffect, useState } from "react";
 import { withBasePath } from "@/lib/base-path";
 
@@ -30,7 +33,7 @@ export default function AdminLogin() {
     const supabase = createSupabaseBrowser();
     if (!supabase) {
       setError(
-        "Authentication is unavailable because Supabase is not configured.",
+        `Authentication is unavailable: ${getSupabaseConfigError() ?? "Supabase could not be initialized."}`,
       );
       setLoading(false);
       return;
