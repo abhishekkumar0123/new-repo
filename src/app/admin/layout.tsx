@@ -38,7 +38,13 @@ export default function AdminLayout({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
-  if (pathname === "/admin/login" || pathname === "/admin/reset-password") {
+  const normalizedPath =
+    (pathname || "/").replace(/^\/new-repo(?=\/|$)/, "").replace(/\/+$/, "") ||
+    "/";
+  if (
+    normalizedPath === "/admin/login" ||
+    normalizedPath === "/admin/reset-password"
+  ) {
     return <>{children}</>;
   }
 
