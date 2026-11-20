@@ -3,7 +3,21 @@
 import { motion } from "framer-motion";
 import { ArrowDown, Download, Mail, ShieldCheck, Terminal } from "lucide-react";
 
-export function Hero() {
+export function Hero({
+  profile,
+}: {
+  profile?: Record<string, unknown> | null;
+}) {
+  const name = String(profile?.name || "ABHISHEK");
+  const title = String(profile?.title || "Cybersecurity Fresher");
+  const introduction = String(
+    profile?.introduction ||
+      "Building practical skills in security monitoring, incident investigation, networking, and defensive analysis. This portfolio is ready for your verified experience and learning journey.",
+  );
+  const availability = String(
+    profile?.availability || "Available for entry-level opportunities",
+  );
+
   return (
     <section
       id="home"
@@ -18,22 +32,19 @@ export function Hero() {
         >
           <div className="mb-7 inline-flex items-center gap-2 border border-[#00ff91]/20 bg-[#00ff91]/[0.05] px-3 py-2 font-mono text-[11px] uppercase tracking-[.16em] text-[#00ff91]">
             <span className="size-1.5 animate-pulse rounded-full bg-[#00ff91]" />{" "}
-            Available for entry-level opportunities
+            {availability}
           </div>
           <p className="mb-3 font-mono text-sm text-[#00ff91]">
             &gt; identity.confirmed
           </p>
           <h1 className="max-w-3xl text-5xl font-semibold leading-[1.02] tracking-tight sm:text-6xl lg:text-[72px]">
-            ABHISHEK
+            {name}
           </h1>
           <p className="mt-5 font-mono text-lg text-[#9ba8a1] sm:text-xl">
-            Cybersecurity Fresher <span className="text-[#00ff91]">/</span> SOC
-            Analyst Focus
+            {title} <span className="text-[#00ff91]">/</span> SOC Analyst Focus
           </p>
           <p className="mt-6 max-w-xl text-base leading-7 text-[#b7c2bd] sm:text-lg">
-            Building practical skills in security monitoring, incident
-            investigation, networking, and defensive analysis. This portfolio is
-            ready for your verified experience and learning journey.
+            {introduction}
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
             <a
