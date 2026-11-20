@@ -2,6 +2,24 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { Plus, Search, Pencil, Trash2, X, Save } from "lucide-react";
+import { createSupabaseBrowser } from "@/lib/supabase/browser";
+
+const ALLOWED_TABLES = new Set([
+  "profile",
+  "site_sections",
+  "skill_categories",
+  "skills",
+  "projects",
+  "project_images",
+  "writeups",
+  "certifications",
+  "lab_entries",
+  "timeline_entries",
+  "social_links",
+  "media_assets",
+  "contact_messages",
+  "site_settings",
+]);
 
 export type AdminField = {
   name: string;
@@ -33,6 +51,7 @@ export function AdminCollection({
   fields: AdminField[];
   canCreate?: boolean;
 }) {
+  const supabase = createSupabaseBrowser();
   const [rows, setRows] = useState<Record<string, unknown>[]>([]);
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
@@ -42,10 +61,28 @@ export function AdminCollection({
   async function load() {
     setLoading(true);
     setError("");
-    const response = await fetch(`/api/admin/${table}`, { cache: "no-store" });
-    const body = await response.json();
-    if (!response.ok) setError(body.error || "Unable to load records");
-    else setRows(body.data ?? []);
+    if (!ALLOWED_TABLES.has(table)) {
+      setError("Invalid collection");
+      setLoading(false);
+      return;
+    }
+    const supabase = createSupabaseBrowser();
+    if (!supabase) {
+      setError("Supabase is not configured");
+      setLoading(false);
+      return;
+    }
+    let query = supabase.from(table).select("*").limit(500);
+    if (table !== "profile" && table !== "site_settings")
+      query = query.order("display_order", {
+        ascending: true,
+        nullsFirst: false,
+      });
+    if (table === "projects" || table === "writeups")
+      query = query.order("updated_at", { ascending: false });
+    const { data, error: queryError } = await query;
+    if (queryError) setError(queryError.message);
+    else setRows(data ?? []);
     setLoading(false);
   }
 
@@ -72,15 +109,31 @@ export function AdminCollection({
     event.preventDefault();
     if (!editor) return;
     setError("");
-    const method = editor.id !== undefined ? "PUT" : "POST";
-    const response = await fetch(`/api/admin/${table}`, {
-      method,
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(editor),
-    });
-    const body = await response.json();
-    if (!response.ok) {
-      setError(body.error || "Unable to save record");
+    if (!ALLOWED_TABLES.has(table)) {
+      setError("Invalid collection");
+      return;
+    }
+    const supabase = createSupabaseBrowser();
+    if (!supabase) {
+      setError("Supabase is not configured");
+      return;
+    }
+    const allowed = Object.fromEntries(
+      Object.entries(editor)
+        .filter(([key]) => !["id", "created_at", "updated_at"].includes(key))
+        .slice(0, 40),
+    );
+    if (Object.keys(allowed).length === 0) {
+      setError("No valid fields");
+      return;
+    }
+    const mutation =
+      editor.id !== undefined
+        ? supabase.from(table).update(allowed).eq("id", editor.id)
+        : supabase.from(table).insert(allowed);
+    const { error: mutationError } = await mutation;
+    if (mutationError) {
+      setError(mutationError.message);
       return;
     }
     setEditor(null);
@@ -93,12 +146,31 @@ export function AdminCollection({
       !window.confirm("Delete this record? This cannot be undone.")
     )
       return;
-    const response = await fetch(
-      `/api/admin/${table}?id=${encodeURIComponent(String(row.id))}`,
-      { method: "DELETE" },
-    );
-    const body = await response.json();
-    if (!response.ok) setError(body.error || "Unable to delete record");
+    if (!ALLOWED_TABLES.has(table)) {
+      setError("Invalid collection");
+      return;
+    }
+    const supabase = createSupabaseBrowser();
+    if (!supabase) {
+      setError("Supabase is not configured");
+      return;
+    }
+    if (table === "media_assets") {
+      const { data: asset } = await supabase
+        .from("media_assets")
+        .select("storage_path")
+        .eq("id", row.id)
+        .single();
+      if (asset?.storage_path)
+        await supabase.storage
+          .from("portfolio-media")
+          .remove([asset.storage_path]);
+    }
+    const { error: deleteError } = await supabase
+      .from(table)
+      .delete()
+      .eq("id", row.id);
+    if (deleteError) setError(deleteError.message);
     else await load();
   }
 
@@ -267,43 +339,17 @@ export function AdminCollection({
                       </span>
                       <textarea
                         required={field.required}
-                        value={String(value ?? "")}
+                        value={String(value)}
                         onChange={(event) =>
                           setEditor({
                             ...editor,
                             [field.name]: event.target.value,
                           })
                         }
-                        rows={5}
+                        rows={3}
+                        className="w-full rounded-md border border-white/[0.08] bg-[#0a0f0c] p-3 font-mono text-sm placeholder:text-[#77847e] focus:ring-1 focus:ring-[#00ff91]/40"
                         placeholder={field.placeholder}
-                        className="w-full resize-y border border-white/[0.08] bg-black/10 p-4 text-sm outline-none focus:border-[#00ff91]/40"
                       />
-                    </label>
-                  );
-                if (field.type === "select")
-                  return (
-                    <label key={field.name}>
-                      <span className="mb-2 block font-mono text-[10px] uppercase text-[#77847e]">
-                        {field.label}
-                      </span>
-                      <select
-                        required={field.required}
-                        value={String(value ?? "")}
-                        onChange={(event) =>
-                          setEditor({
-                            ...editor,
-                            [field.name]: event.target.value,
-                          })
-                        }
-                        className="h-12 w-full border border-white/[0.08] bg-[#101915] px-3 text-sm outline-none"
-                      >
-                        <option value="">Select...</option>
-                        {field.options?.map((option) => (
-                          <option key={option} value={option}>
-                            {option}
-                          </option>
-                        ))}
-                      </select>
                     </label>
                   );
                 return (
@@ -313,35 +359,44 @@ export function AdminCollection({
                     </span>
                     <input
                       required={field.required}
-                      type={field.type ?? "text"}
-                      value={String(value ?? "")}
+                      type={
+                        field.type === "date"
+                          ? "date"
+                          : field.type === "email"
+                            ? "email"
+                            : field.type === "number"
+                              ? "number"
+                              : "text"
+                      }
+                      value={value == null ? "" : String(value)}
                       onChange={(event) =>
                         setEditor({
                           ...editor,
                           [field.name]: event.target.value,
                         })
                       }
+                      className="w-full rounded-md border border-white/[0.08] bg-[#0a0f0c] p-3 font-mono text-sm placeholder:text-[#77847e] focus:ring-1 focus:ring-[#00ff91]/40"
                       placeholder={field.placeholder}
-                      className="h-12 w-full border border-white/[0.08] bg-black/10 px-4 text-sm outline-none focus:border-[#00ff91]/40"
                     />
                   </label>
                 );
               })}
             </div>
-            <div className="mt-6 flex justify-end gap-3">
+            <div className="mt-4 flex justify-end gap-4">
               <button
                 type="button"
                 onClick={() => setEditor(null)}
-                className="h-11 px-4 font-mono text-[10px] uppercase text-[#77847e]"
+                className="inline-flex h-10 items-center justify-center gap-2 rounded-md border border-white/[0.08] bg-[#0a0f0c] px-4 font-mono text-xs uppercase text-[#9ba8a1] transition-colors hover:bg-[#00ff91]/10"
               >
+                <X size={14} />
                 Cancel
               </button>
               <button
                 type="submit"
-                className="inline-flex h-11 items-center gap-2 bg-[#00ff91] px-5 font-mono text-[10px] font-bold uppercase text-[#06110b]"
+                className="inline-flex h-10 items-center justify-center gap-2 rounded-md bg-[#00ff91] px-4 font-mono text-xs uppercase text-[#06110b] transition-colors hover:bg-[#00ff91]/90"
               >
                 <Save size={14} />
-                Save record
+                Save changes
               </button>
             </div>
           </form>

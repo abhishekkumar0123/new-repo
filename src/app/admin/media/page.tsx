@@ -2,6 +2,9 @@
 
 import { useEffect, useState } from "react";
 import { Upload, Trash2, ImageIcon } from "lucide-react";
+import { createSupabaseBrowser } from "@/lib/supabase/browser";
+
+const supabase = createSupabaseBrowser();
 
 type Media = {
   id: string;
@@ -9,6 +12,7 @@ type Media = {
   public_url: string;
   mime_type: string;
   size_bytes: number;
+  storage_path: string;
 };
 
 export default function Page() {
@@ -17,12 +21,17 @@ export default function Page() {
   const [loading, setLoading] = useState(false);
 
   async function load() {
-    const response = await fetch("/api/admin/media_assets", {
-      cache: "no-store",
-    });
-    const body = await response.json();
-    if (response.ok) setRows(body.data ?? []);
-    else setError(body.error || "Unable to load media");
+    const supabase = createSupabaseBrowser();
+    if (!supabase) {
+      setError("Supabase is not configured");
+      return;
+    }
+    const { data, error: loadError } = await supabase
+      .from("media_assets")
+      .select("*")
+      .order("created_at", { ascending: false });
+    if (loadError) setError(loadError.message);
+    else setRows((data ?? []) as Media[]);
   }
   useEffect(() => {
     void load();
@@ -32,16 +41,54 @@ export default function Page() {
     if (!file) return;
     setLoading(true);
     setError("");
-    const form = new FormData();
-    form.set("file", file);
-    const response = await fetch("/api/admin/media", {
-      method: "POST",
-      body: form,
-    });
-    const body = await response.json();
+    const supabase = createSupabaseBrowser();
+    if (!supabase) {
+      setLoading(false);
+      setError("Supabase is not configured");
+      return;
+    }
+    const allowedTypes = new Set([
+      "image/jpeg",
+      "image/png",
+      "image/webp",
+      "application/pdf",
+    ]);
+    if (!allowedTypes.has(file.type)) {
+      setLoading(false);
+      setError("Unsupported file type");
+      return;
+    }
+    if (file.size > 10 * 1024 * 1024) {
+      setLoading(false);
+      setError("File exceeds 10 MB");
+      return;
+    }
+    const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "-");
+    const path = `${new Date().getFullYear()}/${crypto.randomUUID()}-${safeName}`;
+    const { error: uploadError } = await supabase.storage
+      .from("portfolio-media")
+      .upload(path, file, { contentType: file.type, upsert: false });
+    if (uploadError) {
+      setLoading(false);
+      setError(uploadError.message);
+      return;
+    }
+    const { data: publicUrl } = supabase.storage
+      .from("portfolio-media")
+      .getPublicUrl(path);
+    const { error: metadataError } = await supabase
+      .from("media_assets")
+      .insert({
+        name: file.name,
+        storage_path: path,
+        public_url: publicUrl.publicUrl,
+        mime_type: file.type,
+        size_bytes: file.size,
+      });
     setLoading(false);
-    if (!response.ok) {
-      setError(body.error || "Upload failed");
+    if (metadataError) {
+      await supabase.storage.from("portfolio-media").remove([path]);
+      setError(metadataError.message);
       return;
     }
     await load();
@@ -49,16 +96,24 @@ export default function Page() {
   async function remove(row: Media) {
     if (!window.confirm("Delete this media asset? This cannot be undone."))
       return;
-    const response = await fetch(
-      `/api/admin/media_assets?id=${encodeURIComponent(row.id)}`,
-      { method: "DELETE" },
-    );
-    if (!response.ok) {
-      const body = await response.json();
-      setError(body.error || "Delete failed");
+    const supabase = createSupabaseBrowser();
+    if (!supabase) {
+      setError("Supabase is not configured");
       return;
     }
-    await load();
+    const { error: storageError } = await supabase.storage
+      .from("portfolio-media")
+      .remove([row.storage_path]);
+    if (storageError) {
+      setError(storageError.message);
+      return;
+    }
+    const { error: deleteError } = await supabase
+      .from("media_assets")
+      .delete()
+      .eq("id", row.id);
+    if (deleteError) setError(deleteError.message);
+    else await load();
   }
 
   return (

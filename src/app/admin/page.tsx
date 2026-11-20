@@ -1,26 +1,33 @@
-import { FolderKanban, FileText, Award, Layers3, Mail } from "lucide-react";
-import { createSupabaseServer } from "@/lib/supabase/server";
+"use client";
 
-export default async function AdminDashboard() {
-  const supabase = await createSupabaseServer();
-  const counts: Record<string, number> = {};
-  if (supabase) {
-    const tables = [
-      "projects",
-      "writeups",
-      "certifications",
-      "skills",
-      "contact_messages",
-    ];
-    await Promise.all(
-      tables.map(async (table) => {
+import { useEffect, useState } from "react";
+import { createSupabaseBrowser } from "@/lib/supabase/browser";
+import { FolderKanban, FileText, Award, Layers3, Mail } from "lucide-react";
+
+export default function AdminDashboard() {
+  const [counts, setCounts] = useState<Record<string, number>>({});
+  const [connected, setConnected] = useState(false);
+
+  useEffect(() => {
+    const supabase = createSupabaseBrowser();
+    if (!supabase) return;
+    setConnected(true);
+    void Promise.all(
+      [
+        "projects",
+        "writeups",
+        "certifications",
+        "skills",
+        "contact_messages",
+      ].map(async (table) => {
         const { count } = await supabase
           .from(table)
           .select("*", { count: "exact", head: true });
-        counts[table] = count ?? 0;
+        return [table, count ?? 0] as const;
       }),
-    );
-  }
+    ).then((results) => setCounts(Object.fromEntries(results)));
+  }, []);
+
   const cards = [
     ["Total projects", String(counts.projects ?? 0), FolderKanban],
     [
@@ -63,7 +70,7 @@ export default async function AdminDashboard() {
           Recent changes
         </h2>
         <p className="mt-4 text-sm text-[#77847e]">
-          {supabase
+          {connected
             ? "CMS records are connected to Supabase."
             : "Configure Supabase environment variables to connect CMS records."}
         </p>

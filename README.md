@@ -53,3 +53,22 @@ No public signup route is created. Never add the service-role key or password to
 Only users present in `admin_users` may enter `/admin`. Ordinary authenticated Supabase users are not administrators.
 
 The initial public content is placeholder or sample content where appropriate. It does not claim professional experience, certifications, or achievements.
+
+## GitHub Pages static hosting
+
+The site exports to `out/` with repository base path `/new-repo`. GitHub Actions builds pull requests and deploys pushes to `main` (and manual dispatch). Configure the repository as a GitHub Pages source using GitHub Actions.
+
+Set these GitHub Actions secrets:
+
+- `NEXT_PUBLIC_SUPABASE_URL`
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+
+Never configure or expose a Supabase service-role key in this repository or GitHub Actions secrets used by the browser.
+
+## Static hosting limitations
+
+- Contact submissions run directly through Supabase RLS. Server-side IP rate limiting is unavailable; the form uses honeypot protection and a browser session throttle. For stronger abuse protection, configure Supabase CAPTCHA, database quotas, or a third-party form protection service.
+- Project and writeup detail entries are loaded by slug in static browser pages, so new CMS entries do not require a GitHub Pages rebuild.
+- Apply all SQL migrations, including `202611200005_static_host_hardening.sql`, in the Supabase SQL editor.
+- Configure the public URL allowlists in Supabase Auth for local and production callback URLs.
+- The media bucket must allow public reads and restrict authenticated writes to the `is_admin()` RLS policy. Migration `005` configures bucket MIME and size limits.
