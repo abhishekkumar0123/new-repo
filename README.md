@@ -77,3 +77,4 @@ In Supabase Auth URL Configuration, add the GitHub Pages callback:
 - Apply all SQL migrations, including `202611200006_reconcile_admin_authorization.sql`, in the Supabase SQL editor.
 - Configure the public URL allowlists in Supabase Auth for local and production callback URLs.
 - The media bucket must allow public reads and restrict authenticated writes to the `is_admin()` RLS policy. Migration `005` configures bucket MIME and size limits.
+- Apply `202611200007_admin_email_authorization.sql` to reconcile permanent administrator email authorization in Supabase.
