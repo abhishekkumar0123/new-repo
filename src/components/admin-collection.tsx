@@ -93,8 +93,89 @@ export function AdminCollection({
     if (table === "projects" || table === "writeups")
       query = query.order("updated_at", { ascending: false });
     const { data, error: queryError } = await query;
-    if (queryError) setError(queryError.message);
-    else {
+    if (queryError) {
+      setError(queryError.message);
+      if (table === "projects") {
+        setRows([
+          {
+            _fallback: true,
+            title: "Network Traffic Investigation",
+            slug: "SIM-001",
+            case_id: "CASE-001",
+            short_description:
+              "A clearly labelled sample case file demonstrating a structured packet-investigation workflow.",
+            category: "Packet Analysis",
+            status: "published",
+            is_demo: true,
+            display_order: 1,
+          },
+          {
+            _fallback: true,
+            title: "SOC Alert Triage Workflow",
+            slug: "SIM-002",
+            case_id: "CASE-002",
+            short_description:
+              "A fictional investigation exercise covering evidence review and analyst recommendations.",
+            category: "Detection",
+            status: "published",
+            is_demo: true,
+            display_order: 2,
+          },
+          {
+            _fallback: true,
+            title: "Security Learning Lab",
+            slug: "SIM-003",
+            case_id: "CASE-003",
+            short_description:
+              "A sample editable case file for documenting an isolated, authorized practice environment.",
+            category: "Lab Notes",
+            status: "published",
+            is_demo: true,
+            display_order: 3,
+          },
+        ]);
+      } else if (table === "skills") {
+        setRows([
+          {
+            _fallback: true,
+            name: "Networking",
+            description:
+              "TCP/IP, routing concepts, packet analysis fundamentals",
+            icon: "Network",
+            indicator: "Learning",
+            display_order: 1,
+            visible: true,
+          },
+          {
+            _fallback: true,
+            name: "Linux",
+            description: "Command-line fundamentals and system navigation",
+            icon: "Terminal",
+            indicator: "Learning",
+            display_order: 2,
+            visible: true,
+          },
+          {
+            _fallback: true,
+            name: "Security Monitoring",
+            description: "Log review, alert triage, investigation workflow",
+            icon: "SearchCheck",
+            indicator: "Learning",
+            display_order: 3,
+            visible: true,
+          },
+          {
+            _fallback: true,
+            name: "Security Fundamentals",
+            description: "CIA triad, authentication, risk and threat awareness",
+            icon: "ShieldAlert",
+            indicator: "Learning",
+            display_order: 4,
+            visible: true,
+          },
+        ]);
+      }
+    } else {
       const loadedRows = data ?? [];
       if (loadedRows.length === 0 && table === "profile") {
         setRows([
@@ -109,6 +190,85 @@ export function AdminCollection({
             profile_image: null,
             resume_url: null,
             availability: null,
+          },
+        ]);
+      } else if (loadedRows.length === 0 && table === "projects") {
+        setRows([
+          {
+            _fallback: true,
+            title: "Network Traffic Investigation",
+            slug: "SIM-001",
+            case_id: "CASE-001",
+            short_description:
+              "A clearly labelled sample case file demonstrating a structured packet-investigation workflow.",
+            category: "Packet Analysis",
+            status: "published",
+            is_demo: true,
+            display_order: 1,
+          },
+          {
+            _fallback: true,
+            title: "SOC Alert Triage Workflow",
+            slug: "SIM-002",
+            case_id: "CASE-002",
+            short_description:
+              "A fictional investigation exercise covering evidence review and analyst recommendations.",
+            category: "Detection",
+            status: "published",
+            is_demo: true,
+            display_order: 2,
+          },
+          {
+            _fallback: true,
+            title: "Security Learning Lab",
+            slug: "SIM-003",
+            case_id: "CASE-003",
+            short_description:
+              "A sample editable case file for documenting an isolated, authorized practice environment.",
+            category: "Lab Notes",
+            status: "published",
+            is_demo: true,
+            display_order: 3,
+          },
+        ]);
+      } else if (loadedRows.length === 0 && table === "skills") {
+        setRows([
+          {
+            _fallback: true,
+            name: "Networking",
+            description:
+              "TCP/IP, routing concepts, packet analysis fundamentals",
+            icon: "Network",
+            indicator: "Learning",
+            display_order: 1,
+            visible: true,
+          },
+          {
+            _fallback: true,
+            name: "Linux",
+            description: "Command-line fundamentals and system navigation",
+            icon: "Terminal",
+            indicator: "Learning",
+            display_order: 2,
+            visible: true,
+          },
+          {
+            _fallback: true,
+            name: "Security Monitoring",
+            description: "Log review, alert triage, investigation workflow",
+            icon: "SearchCheck",
+            indicator: "Learning",
+            display_order: 3,
+            visible: true,
+          },
+          {
+            _fallback: true,
+            name: "Security Fundamentals",
+            description: "CIA triad, authentication, risk and threat awareness",
+            icon: "ShieldAlert",
+            indicator: "Learning",
+            display_order: 4,
+            visible: true,
           },
         ]);
       } else if (loadedRows.length === 0 && table === "site_settings") {
@@ -174,21 +334,40 @@ export function AdminCollection({
     }
     const allowed = Object.fromEntries(
       Object.entries(editor)
-        .filter(([key]) => !["id", "created_at", "updated_at"].includes(key))
+        .filter(
+          ([key]) =>
+            !["id", "created_at", "updated_at", "_fallback"].includes(key),
+        )
         .slice(0, 40),
     );
     if (Object.keys(allowed).length === 0) {
       setError("No valid fields");
       return;
     }
-    const mutation =
-      table === "profile" || table === "site_settings"
-        ? supabase
-            .from(table)
-            .upsert({ id: 1, ...allowed }, { onConflict: "id" })
-        : editor.id !== undefined
+    let mutation;
+    if (table === "profile" || table === "site_settings") {
+      mutation = supabase
+        .from(table)
+        .upsert({ id: 1, ...allowed }, { onConflict: "id" });
+    } else if (table === "projects" && editor._fallback === true) {
+      mutation = supabase
+        .from("projects")
+        .upsert(allowed, { onConflict: "slug" });
+    } else if (table === "skills" && editor._fallback === true) {
+      const { data: existingSkill } = await supabase
+        .from("skills")
+        .select("id")
+        .eq("name", String(allowed.name))
+        .maybeSingle();
+      mutation = existingSkill?.id
+        ? supabase.from("skills").update(allowed).eq("id", existingSkill.id)
+        : supabase.from("skills").insert(allowed);
+    } else {
+      mutation =
+        editor.id !== undefined
           ? supabase.from(table).update(allowed).eq("id", editor.id)
           : supabase.from(table).insert(allowed);
+    }
     const { error: mutationError } = await mutation;
     if (mutationError) {
       setError(mutationError.message);
