@@ -85,6 +85,23 @@ export default function Home() {
       .catch(() => setPortfolio(null));
   }, []);
 
+  const liveSkills = portfolio?.skills?.length
+    ? portfolio.skills.map(
+        (skill: Record<string, unknown>) =>
+          [
+            String(skill.name),
+            String(skill.description || ""),
+            String(skill.icon || "Network") === "ShieldAlert"
+              ? ShieldAlert
+              : String(skill.icon || "Network") === "SearchCheck"
+                ? SearchCheck
+                : String(skill.icon || "Network") === "Terminal"
+                  ? TerminalIcon
+                  : Network,
+          ] as const,
+      )
+    : skills;
+
   const liveProjects = portfolio?.projects?.length
     ? portfolio.projects.map((project: Record<string, unknown>) => ({
         id: String(project.slug || project.id),
@@ -100,7 +117,7 @@ export default function Home() {
   return (
     <main>
       <SiteHeader />
-      <Hero />
+      <Hero profile={portfolio?.profile} />
 
       <section className="border-b border-white/[0.06] px-5 py-20 lg:px-8">
         <div className="mx-auto max-w-7xl">
@@ -169,9 +186,10 @@ export default function Home() {
           </div>
           <div className="glass-panel p-7 sm:p-9">
             <p className="text-lg leading-8 text-[#bdc8c2]">
-              I am a cybersecurity fresher developing foundational knowledge for
-              a SOC Analyst role. My current focus is on understanding networks,
-              security telemetry, alert investigation, and clear documentation.
+              {String(
+                portfolio?.profile?.biography ||
+                  "I am a cybersecurity fresher developing foundational knowledge for a SOC Analyst role. My current focus is on understanding networks, security telemetry, alert investigation, and clear documentation.",
+              )}
             </p>
             <div className="mt-7 grid gap-3 sm:grid-cols-2">
               <div className="border border-white/[0.07] p-4">
@@ -179,7 +197,10 @@ export default function Home() {
                   Current objective
                 </p>
                 <p className="mt-2 text-sm text-[#dfe7e3]">
-                  Secure an entry-level cybersecurity opportunity
+                  {String(
+                    portfolio?.profile?.objective ||
+                      "Secure an entry-level cybersecurity opportunity",
+                  )}
                 </p>
               </div>
               <div className="border border-white/[0.07] p-4">
@@ -187,7 +208,10 @@ export default function Home() {
                   Learning focus
                 </p>
                 <p className="mt-2 text-sm text-[#dfe7e3]">
-                  SOC workflows and defensive analysis
+                  {String(
+                    portfolio?.profile?.learning_focus ||
+                      "SOC workflows and defensive analysis",
+                  )}
                 </p>
               </div>
             </div>
@@ -206,7 +230,7 @@ export default function Home() {
             </h2>
           </div>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {skills.map(([title, description, Icon]) => {
+            {liveSkills.map(([title, description, Icon]) => {
               const Component = Icon as React.ElementType;
               return (
                 <article
