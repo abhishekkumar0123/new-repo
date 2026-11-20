@@ -74,6 +74,6 @@ In Supabase Auth URL Configuration, add the GitHub Pages callback:
 
 - Contact submissions run directly through Supabase RLS. Server-side IP rate limiting is unavailable; the form uses honeypot protection and a browser session throttle. For stronger abuse protection, configure Supabase CAPTCHA, database quotas, or a third-party form protection service.
 - Project and writeup detail entries are loaded by slug in static browser pages, so new CMS entries do not require a GitHub Pages rebuild.
-- Apply all SQL migrations, including `202611200005_static_host_hardening.sql`, in the Supabase SQL editor.
+- Apply all SQL migrations, including `202611200006_reconcile_admin_authorization.sql`, in the Supabase SQL editor.
 - Configure the public URL allowlists in Supabase Auth for local and production callback URLs.
 - The media bucket must allow public reads and restrict authenticated writes to the `is_admin()` RLS policy. Migration `005` configures bucket MIME and size limits.
