@@ -73,7 +73,19 @@ export function AdminCollection({
       return;
     }
     let query = supabase.from(table).select("*").limit(500);
-    if (table !== "profile" && table !== "site_settings")
+    const orderedTables = new Set([
+      "site_sections",
+      "skill_categories",
+      "skills",
+      "projects",
+      "project_images",
+      "writeups",
+      "certifications",
+      "lab_entries",
+      "timeline_entries",
+      "social_links",
+    ]);
+    if (orderedTables.has(table))
       query = query.order("display_order", {
         ascending: true,
         nullsFirst: false,
@@ -82,7 +94,49 @@ export function AdminCollection({
       query = query.order("updated_at", { ascending: false });
     const { data, error: queryError } = await query;
     if (queryError) setError(queryError.message);
-    else setRows(data ?? []);
+    else {
+      const loadedRows = data ?? [];
+      if (loadedRows.length === 0 && table === "profile") {
+        setRows([
+          {
+            id: 1,
+            name: "ABHISHEK",
+            title: "Cybersecurity Fresher",
+            introduction: "",
+            biography: "",
+            objective: "",
+            learning_focus: "",
+            profile_image: null,
+            resume_url: null,
+            availability: null,
+          },
+        ]);
+      } else if (loadedRows.length === 0 && table === "site_settings") {
+        setRows([
+          {
+            id: 1,
+            site_name: "Abhishek",
+            terminal_welcome: "Welcome to abhishek.security",
+            terminal_enabled_commands: [
+              "help",
+              "whoami",
+              "about",
+              "skills",
+              "projects",
+              "contact",
+              "clear",
+            ],
+            contact_email: null,
+            public_email_visible: true,
+            seo_title: null,
+            seo_description: null,
+            og_image: null,
+          },
+        ]);
+      } else {
+        setRows(loadedRows);
+      }
+    }
     setLoading(false);
   }
 
@@ -128,9 +182,13 @@ export function AdminCollection({
       return;
     }
     const mutation =
-      editor.id !== undefined
-        ? supabase.from(table).update(allowed).eq("id", editor.id)
-        : supabase.from(table).insert(allowed);
+      table === "profile" || table === "site_settings"
+        ? supabase
+            .from(table)
+            .upsert({ id: 1, ...allowed }, { onConflict: "id" })
+        : editor.id !== undefined
+          ? supabase.from(table).update(allowed).eq("id", editor.id)
+          : supabase.from(table).insert(allowed);
     const { error: mutationError } = await mutation;
     if (mutationError) {
       setError(mutationError.message);
@@ -262,9 +320,10 @@ export function AdminCollection({
                 <button
                   onClick={() => setEditor({ ...row })}
                   aria-label="Edit"
-                  className="grid size-9 place-items-center border border-white/[0.08] text-[#9ba8a1] hover:border-[#00ff91]/40 hover:text-[#00ff91]"
+                  className="inline-flex h-9 items-center gap-2 border border-white/[0.08] px-3 font-mono text-[10px] uppercase text-[#9ba8a1] hover:border-[#00ff91]/40 hover:text-[#00ff91]"
                 >
                   <Pencil size={14} />
+                  Edit
                 </button>
                 {row.id !== undefined && (
                   <button
@@ -339,16 +398,15 @@ export function AdminCollection({
                       </span>
                       <textarea
                         required={field.required}
-                        value={String(value)}
+                        value={String(value ?? "")}
                         onChange={(event) =>
                           setEditor({
                             ...editor,
                             [field.name]: event.target.value,
                           })
                         }
-                        rows={3}
-                        className="w-full rounded-md border border-white/[0.08] bg-[#0a0f0c] p-3 font-mono text-sm placeholder:text-[#77847e] focus:ring-1 focus:ring-[#00ff91]/40"
                         placeholder={field.placeholder}
+                        className="min-h-[120px] w-full rounded-md border border-white/[0.08] bg-[#0a0f0c] p-4 font-mono text-sm placeholder:text-[#77847e] focus:ring-1 focus:ring-[#00ff91]/30"
                       />
                     </label>
                   );
@@ -357,45 +415,68 @@ export function AdminCollection({
                     <span className="mb-2 block font-mono text-[10px] uppercase text-[#77847e]">
                       {field.label}
                     </span>
-                    <input
-                      required={field.required}
-                      type={
-                        field.type === "date"
-                          ? "date"
-                          : field.type === "email"
+                    {field.type === "select" ? (
+                      <select
+                        value={String(value ?? "")}
+                        onChange={(event) =>
+                          setEditor({
+                            ...editor,
+                            [field.name]: event.target.value,
+                          })
+                        }
+                        required={field.required}
+                        className="block w-full rounded-md border border-white/[0.08] bg-[#0a0f0c] p-3 font-mono text-sm text-[#e1e1e1] placeholder:text-[#77847e] focus:ring-1 focus:ring-[#00ff91]/30"
+                      >
+                        <option value="" disabled>
+                          {field.placeholder ?? "Select an option"}
+                        </option>
+                        {field.options?.map((option) => (
+                          <option key={option} value={option}>
+                            {option}
+                          </option>
+                        ))}
+                      </select>
+                    ) : (
+                      <input
+                        type={
+                          field.type === "email"
                             ? "email"
-                            : field.type === "number"
-                              ? "number"
-                              : "text"
-                      }
-                      value={value == null ? "" : String(value)}
-                      onChange={(event) =>
-                        setEditor({
-                          ...editor,
-                          [field.name]: event.target.value,
-                        })
-                      }
-                      className="w-full rounded-md border border-white/[0.08] bg-[#0a0f0c] p-3 font-mono text-sm placeholder:text-[#77847e] focus:ring-1 focus:ring-[#00ff91]/40"
-                      placeholder={field.placeholder}
-                    />
+                            : field.type === "url"
+                              ? "url"
+                              : field.type === "date"
+                                ? "date"
+                                : "text"
+                        }
+                        value={String(value ?? "")}
+                        onChange={(event) =>
+                          setEditor({
+                            ...editor,
+                            [field.name]: event.target.value,
+                          })
+                        }
+                        required={field.required}
+                        placeholder={field.placeholder}
+                        className="block w-full rounded-md border border-white/[0.08] bg-[#0a0f0c] p-3 font-mono text-sm placeholder:text-[#77847e] focus:ring-1 focus:ring-[#00ff91]/30"
+                      />
+                    )}
                   </label>
                 );
               })}
             </div>
-            <div className="mt-4 flex justify-end gap-4">
+            <div className="mt-6 flex justify-end gap-4">
               <button
                 type="button"
                 onClick={() => setEditor(null)}
-                className="inline-flex h-10 items-center justify-center gap-2 rounded-md border border-white/[0.08] bg-[#0a0f0c] px-4 font-mono text-xs uppercase text-[#9ba8a1] transition-colors hover:bg-[#00ff91]/10"
+                className="inline-flex h-10 items-center justify-center gap-2 rounded-md border border-white/[0.08] bg-[#00ff91]/10 px-4 font-mono text-sm text-[#00ff91] transition-colors hover:bg-[#00ff91]/20"
               >
-                <X size={14} />
+                <X size={16} />
                 Cancel
               </button>
               <button
                 type="submit"
-                className="inline-flex h-10 items-center justify-center gap-2 rounded-md bg-[#00ff91] px-4 font-mono text-xs uppercase text-[#06110b] transition-colors hover:bg-[#00ff91]/90"
+                className="inline-flex h-10 items-center justify-center gap-2 rounded-md bg-[#00ff91] px-4 font-mono text-sm text-[#06110b] transition-colors hover:bg-[#00ff91]/90"
               >
-                <Save size={14} />
+                <Save size={16} />
                 Save changes
               </button>
             </div>
