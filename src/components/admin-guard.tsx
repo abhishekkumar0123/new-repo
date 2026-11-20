@@ -19,6 +19,15 @@ export function AdminGuard({ children }: { children: React.ReactNode }) {
         window.location.replace(withBasePath("/admin/login"));
         return;
       }
+      const { data: authorized, error: rpcError } =
+        await supabase.rpc("is_admin");
+      if (!rpcError && authorized === true) {
+        setAllowed(true);
+        return;
+      }
+
+      // Compatibility fallback for deployments that have admin_users and RLS,
+      // but have not yet installed the is_admin RPC migration.
       const { data: administrator, error: adminError } = await supabase
         .from("admin_users")
         .select("role")
