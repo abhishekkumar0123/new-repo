@@ -65,26 +65,61 @@ body {
   color: #f2f7f4;
 }
 .admin-dashboard[data-admin-theme="light"] {
-  background: #eef3ef;
-  color: #17231d;
+  background: #f3f6f4;
+  color: #1d2923;
 }
 .admin-dashboard[data-admin-theme="light"] aside,
 .admin-dashboard[data-admin-theme="light"] header {
-  background: #f8fbf9;
-  border-color: rgba(23, 35, 29, 0.12);
+  background: #ffffff;
+  border-color: #dfe7e2;
+}
+.admin-dashboard[data-admin-theme="light"] nav a {
+  color: #52635a;
+}
+.admin-dashboard[data-admin-theme="light"] nav a:hover {
+  color: #08764a;
+  background: #eaf8f1;
 }
 .admin-dashboard[data-admin-theme="light"] section {
-  background: #eef3ef;
+  background: #f3f6f4;
 }
 .admin-dashboard[data-admin-theme="light"] .glass-panel {
-  background: rgba(255, 255, 255, 0.92);
-  border-color: rgba(23, 35, 29, 0.12);
-  box-shadow: 0 16px 45px rgba(23, 35, 29, 0.08);
+  background: #ffffff;
+  border-color: #dde6e0;
+  box-shadow: 0 10px 30px rgba(31, 56, 43, 0.08);
+}
+.admin-dashboard[data-admin-theme="light"] h1,
+.admin-dashboard[data-admin-theme="light"] h2,
+.admin-dashboard[data-admin-theme="light"] h3,
+.admin-dashboard[data-admin-theme="light"] article p,
+.admin-dashboard[data-admin-theme="light"] label span,
+.admin-dashboard[data-admin-theme="light"] .text-white {
+  color: #1d2923;
+}
+.admin-dashboard[data-admin-theme="light"] aside p,
+.admin-dashboard[data-admin-theme="light"] header p,
+.admin-dashboard[data-admin-theme="light"] article p {
+  color: #617066;
+}
+.admin-dashboard[data-admin-theme="light"] h1,
+.admin-dashboard[data-admin-theme="light"] h2,
+.admin-dashboard[data-admin-theme="light"] h3,
+.admin-dashboard[data-admin-theme="light"] article p:first-child {
+  color: #1d2923;
 }
 .admin-dashboard[data-admin-theme="light"] input,
 .admin-dashboard[data-admin-theme="light"] textarea,
 .admin-dashboard[data-admin-theme="light"] select {
-  color: #17231d;
+  background: #f8faf9;
+  color: #1d2923;
+  border-color: #cad7cf;
+}
+.admin-dashboard[data-admin-theme="light"] input::placeholder,
+.admin-dashboard[data-admin-theme="light"] textarea::placeholder {
+  color: #7a8980;
+}
+.admin-dashboard[data-admin-theme="light"] [class*="border-white"] {
+  border-color: #d8e1db;
 }
 @media (prefers-reduced-motion: reduce) {
   html {
