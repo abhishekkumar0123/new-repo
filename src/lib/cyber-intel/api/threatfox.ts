@@ -108,10 +108,32 @@ function classifyIOCType(value: string): IOCType {
 async function threatFoxRequest({
   authKey,
   body,
+  proxyUrl,
 }: {
   authKey?: string;
   body: Record<string, unknown>;
+  proxyUrl?: string;
 }): Promise<{ query_status: string; data: Array<Record<string, unknown>> }> {
+  if (proxyUrl) {
+    const proxyResponse = await fetch(proxyUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "User-Agent": "abhishek-cybersecurity-portfolio/1.0",
+      },
+      body: JSON.stringify({
+        source: "threatfox",
+        body,
+      }),
+    });
+
+    if (!proxyResponse.ok) {
+      throw new Error(`ThreatFox proxy error: ${proxyResponse.status}`);
+    }
+
+    return proxyResponse.json();
+  }
+
   await throttleThreatFoxRequest();
 
   const headers: HeadersInit = {
@@ -146,9 +168,11 @@ async function threatFoxRequest({
 export async function fetchThreatFoxRecent({
   authKey,
   days = 1,
+  proxyUrl,
 }: {
   authKey?: string;
   days?: number;
+  proxyUrl?: string;
 }): Promise<IOCRecord[]> {
   const cacheKey = `threatfox-recent-${days}`;
   const now = Date.now();
@@ -165,6 +189,7 @@ export async function fetchThreatFoxRecent({
     const data = await threatFoxRequest({
       authKey,
       body: { query: "get_iocs", days: Math.min(Math.max(days, 1), 7) },
+      proxyUrl,
     });
 
     if (data.query_status !== "ok" || !data.data) {
@@ -184,10 +209,12 @@ export async function searchThreatFoxIOC({
   authKey,
   searchTerm,
   exactMatch = false,
+  proxyUrl,
 }: {
   authKey?: string;
   searchTerm: string;
   exactMatch?: boolean;
+  proxyUrl?: string;
 }): Promise<IOCRecord[]> {
   try {
     const data = await threatFoxRequest({
@@ -197,6 +224,7 @@ export async function searchThreatFoxIOC({
         search_term: searchTerm,
         exact_match: exactMatch,
       },
+      proxyUrl,
     });
 
     if (data.query_status !== "ok" || !data.data) {
@@ -211,12 +239,68 @@ export async function searchThreatFoxIOC({
 
 export async function checkThreatFoxAvailability({
   authKey,
+  proxyUrl,
 }: {
   authKey?: string;
+  proxyUrl?: string;
 }): Promise<ThreatIntelSourceStatus> {
   const now = Date.now();
 
   try {
+    if (proxyUrl) {
+      const proxyResponse = await fetch(proxyUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "User-Agent": "abhishek-cybersecurity-portfolio/1.0",
+        },
+        body: JSON.stringify({
+          source: "threatfox",
+          body: { query: "get_iocs", days: 1 },
+        }),
+      });
+
+      if (proxyResponse.status === 401 || proxyResponse.status === 403) {
+        return {
+          source: "threatfox",
+          name: "ThreatFox (abuse.ch)",
+          type: "IOCs (IP, domain, URL, hash)",
+          available: false,
+          lastFetched: new Date(now).toISOString(),
+          error: "Authentication required",
+          rateLimited: false,
+          requiresConfiguration: true,
+          configNote: "Configure ABUSECH_AUTH_KEY in Supabase Edge Function secrets.",
+        };
+      }
+
+      if (proxyResponse.status === 429) {
+        return {
+          source: "threatfox",
+          name: "ThreatFox (abuse.ch)",
+          type: "IOCs (IP, domain, URL, hash)",
+          available: false,
+          lastFetched: new Date(now).toISOString(),
+          error: "Rate limited",
+          rateLimited: true,
+          requiresConfiguration: false,
+          configNote: null,
+        };
+      }
+
+      return {
+        source: "threatfox",
+        name: "ThreatFox (abuse.ch)",
+        type: "IOCs (IP, domain, URL, hash)",
+        available: proxyResponse.ok,
+        lastFetched: new Date(now).toISOString(),
+        error: proxyResponse.ok ? null : `HTTP ${proxyResponse.status}`,
+        rateLimited: false,
+        requiresConfiguration: false,
+        configNote: null,
+      };
+    }
+
     await throttleThreatFoxRequest();
 
     const headers: HeadersInit = {

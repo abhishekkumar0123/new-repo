@@ -91,9 +91,11 @@ function mapUrlhausUrlToIOC(
 export async function fetchUrlhausRecent({
   authKey,
   limit = 50,
+  proxyUrl,
 }: {
   authKey?: string;
   limit?: number;
+  proxyUrl?: string;
 }): Promise<IOCRecord[]> {
   const cacheKey = `urlhaus-recent-${limit}`;
   const now = Date.now();
@@ -107,6 +109,39 @@ export async function fetchUrlhausRecent({
   }
 
   try {
+    if (proxyUrl) {
+      const proxyResponse = await fetch(proxyUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "User-Agent": "abhishek-cybersecurity-portfolio/1.0",
+        },
+        body: JSON.stringify({
+          source: "urlhaus",
+          path: "urls/recent/",
+          query: { limit: String(Math.min(limit, 1000)) },
+        }),
+      });
+
+      if (!proxyResponse.ok) {
+        throw new Error(`URLhaus proxy error: ${proxyResponse.status}`);
+      }
+
+      const data = (await proxyResponse.json()) as {
+        query_status: string;
+        urls: Array<Record<string, unknown>>;
+      };
+
+      if (data.query_status !== "ok" || !data.urls) {
+        return [];
+      }
+
+      const iocs = data.urls.map(mapUrlhausUrlToIOC).filter(Boolean) as IOCRecord[];
+
+      urlhausCache = { data: iocs, fetchedAt: now };
+      return iocs;
+    }
+
     await throttleUrlhausRequest();
 
     const url = new URL(`${URLHAUS_BASE_URL}/urls/recent/`);
@@ -153,12 +188,69 @@ export async function fetchUrlhausRecent({
 
 export async function checkUrlhausAvailability({
   authKey,
+  proxyUrl,
 }: {
   authKey?: string;
+  proxyUrl?: string;
 }): Promise<ThreatIntelSourceStatus> {
   const now = Date.now();
 
   try {
+    if (proxyUrl) {
+      const proxyResponse = await fetch(proxyUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "User-Agent": "abhishek-cybersecurity-portfolio/1.0",
+        },
+        body: JSON.stringify({
+          source: "urlhaus",
+          path: "urls/recent/",
+          query: { limit: "1" },
+        }),
+      });
+
+      if (proxyResponse.status === 401 || proxyResponse.status === 403) {
+        return {
+          source: "urlhaus",
+          name: "URLhaus (abuse.ch)",
+          type: "Malicious URLs",
+          available: false,
+          lastFetched: new Date(now).toISOString(),
+          error: "Authentication required",
+          rateLimited: false,
+          requiresConfiguration: true,
+          configNote: "Configure ABUSECH_AUTH_KEY in Supabase Edge Function secrets.",
+        };
+      }
+
+      if (proxyResponse.status === 429) {
+        return {
+          source: "urlhaus",
+          name: "URLhaus (abuse.ch)",
+          type: "Malicious URLs",
+          available: false,
+          lastFetched: new Date(now).toISOString(),
+          error: "Rate limited",
+          rateLimited: true,
+          requiresConfiguration: false,
+          configNote: null,
+        };
+      }
+
+      return {
+        source: "urlhaus",
+        name: "URLhaus (abuse.ch)",
+        type: "Malicious URLs",
+        available: proxyResponse.ok,
+        lastFetched: new Date(now).toISOString(),
+        error: proxyResponse.ok ? null : `HTTP ${proxyResponse.status}`,
+        rateLimited: false,
+        requiresConfiguration: false,
+        configNote: null,
+      };
+    }
+
     await throttleUrlhausRequest();
 
     const url = new URL(`${URLHAUS_BASE_URL}/urls/recent/`);

@@ -41,7 +41,7 @@ export {
   getClassificationLabel,
   getSourceLabel,
   buildThreatActivity,
-  getAuthKey,
+  getProxyUrl,
   clearUrlhausCache,
   clearThreatFoxCache,
 } from "./api/threat-intel";

@@ -21,12 +21,12 @@ import type {
   IOCSource,
 } from "../types/ioc";
 
-const AUTH_KEY = typeof process !== "undefined" && process.env
-  ? (process.env.NEXT_PUBLIC_THREAT_INTEL_AUTH_KEY as string | undefined)
+const PROXY_URL = typeof process !== "undefined" && process.env
+  ? (process.env.NEXT_PUBLIC_THREAT_INTEL_PROXY_URL as string | undefined)
   : undefined;
 
-function getAuthKey(): string | undefined {
-  return AUTH_KEY;
+function getProxyUrl(): string | undefined {
+  return PROXY_URL;
 }
 
 export {
@@ -35,7 +35,7 @@ export {
   searchThreatFoxIOC,
   clearUrlhausCache,
   clearThreatFoxCache,
-  getAuthKey,
+  getProxyUrl,
   type IOCRecord,
 };
 
@@ -46,20 +46,20 @@ export async function fetchAllThreatIntel({
   urlhausDays?: number;
   threatfoxDays?: number;
 }): Promise<IOCRecord[]> {
-  const authKey = getAuthKey();
+  const proxyUrl = getProxyUrl();
   const [urlhausIOCs, threatfoxIOCs] = await Promise.all([
-    fetchUrlhausRecent({ authKey, limit: 100 }),
-    fetchThreatFoxRecent({ authKey, days: threatfoxDays ?? 1 }),
+    fetchUrlhausRecent({ proxyUrl, limit: 100 }),
+    fetchThreatFoxRecent({ proxyUrl, days: threatfoxDays ?? 1 }),
   ]);
 
   return [...urlhausIOCs, ...threatfoxIOCs];
 }
 
 export async function checkThreatIntelStatus(): Promise<ThreatIntelStatus> {
-  const authKey = getAuthKey();
+  const proxyUrl = getProxyUrl();
   const [urlhaus, threatfox] = await Promise.all([
-    checkUrlhausAvailability({ authKey }),
-    checkThreatFoxAvailability({ authKey }),
+    checkUrlhausAvailability({ proxyUrl }),
+    checkThreatFoxAvailability({ proxyUrl }),
   ]);
 
   const sources = [urlhaus, threatfox];
