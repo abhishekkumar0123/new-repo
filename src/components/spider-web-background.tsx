@@ -87,20 +87,24 @@ export function SpiderWebBackground() {
     };
 
     const onPointerMove = (event: PointerEvent) => {
-      if (event.pointerType === "touch") {
-        pointer.x = event.clientX;
-        pointer.y = event.clientY;
-      } else {
-        pointer.x = event.clientX;
-        pointer.y = event.clientY;
+      pointer.x = event.clientX;
+      pointer.y = event.clientY;
+      activePointer = event.pointerType !== "touch";
+
+      if (event.pointerType !== "touch") {
+        window.dispatchEvent(
+          new CustomEvent("portfolio-pointer-move", {
+            detail: { x: event.clientX, y: event.clientY },
+          }),
+        );
       }
-      activePointer = true;
     };
 
     const onPointerLeave = () => {
       activePointer = false;
       pointer.x = width * 0.5;
       pointer.y = height * 0.5;
+      window.dispatchEvent(new Event("portfolio-pointer-leave"));
     };
 
     const drawCurve = (

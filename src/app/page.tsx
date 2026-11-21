@@ -117,7 +117,7 @@ export default function Home() {
   return (
     <main>
       <SiteHeader />
-      <Hero profile={portfolio?.profile} />
+      <Hero profile={portfolio?.profile} links={portfolio?.links} />
 
       <section className="border-b border-white/[0.06] px-5 py-20 lg:px-8">
         <div className="mx-auto max-w-7xl">
@@ -147,7 +147,9 @@ export default function Home() {
             ].map(({ title, text, Icon }) => (
               <article
                 key={title}
-                className="glass-panel p-7 text-center transition hover:-translate-y-2 hover:border-[#00ff91]/35"
+                data-premium-card
+                data-tilt
+                className="premium-card glass-panel p-7 text-center transition hover:-translate-y-2 hover:border-[#00ff91]/35"
               >
                 <Icon size={34} className="mx-auto text-[#00ff91]" />
                 <h3 className="mt-5 text-xl font-semibold">{title}</h3>
@@ -235,7 +237,9 @@ export default function Home() {
               return (
                 <article
                   key={String(title)}
-                  className="glass-panel group p-6 transition hover:-translate-y-1 hover:border-[#00ff91]/30"
+                  data-premium-card
+                  data-tilt
+                  className="premium-card glass-panel group p-6 transition hover:-translate-y-1 hover:border-[#00ff91]/30"
                 >
                   <Component size={22} className="text-[#00ff91]" />
                   <h3 className="mt-5 font-mono text-sm text-white">
@@ -277,7 +281,9 @@ export default function Home() {
               return (
                 <article
                   key={project.id}
-                  className="glass-panel overflow-hidden"
+                  data-premium-card
+                  data-tilt
+                  className="premium-card glass-panel overflow-hidden"
                 >
                   <div className="flex h-44 items-center justify-between border-b border-white/[0.07] bg-[#0c1310] p-6">
                     <span className="font-mono text-[10px] text-[#77847e]">
@@ -332,7 +338,7 @@ export default function Home() {
                   <Link
                     key={String(writeup.id)}
                     href={`/writeups/?slug=${encodeURIComponent(String(writeup.slug))}`}
-                    className="glass-panel p-6 transition hover:-translate-y-1 hover:border-[#00ff91]/30"
+                    className="premium-card glass-panel p-6 transition hover:-translate-y-1 hover:border-[#00ff91]/30"
                   >
                     <BookOpen className="text-[#00ff91]" />
                     <h3 className="mt-5 font-semibold">

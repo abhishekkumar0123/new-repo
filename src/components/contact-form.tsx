@@ -123,8 +123,10 @@ export function ContactForm() {
         className="hidden"
       />
       <button
+        data-magnetic
         disabled={loading}
         className="inline-flex h-12 items-center justify-center gap-2 bg-[#00ff91] font-mono text-xs font-bold uppercase text-[#06110b] disabled:opacity-60"
+        aria-disabled={loading}
       >
         <Send size={14} />
         {loading ? "Sending..." : "Send message"}
