@@ -4,7 +4,7 @@ export async function getPortfolioData() {
   const supabase = createSupabaseBrowser();
   if (!supabase) return null;
 
-  const [profile, sections, categories, skills, projects, writeups, certifications, labs, timeline, links, settings] = await Promise.all([
+  const [profile, sections, categories, skills, projects, writeups, certifications, labs, timeline, links, learning, settings] = await Promise.all([
     supabase.from("profile").select("*").eq("id", 1).maybeSingle(),
     supabase.from("site_sections").select("*").eq("visible", true).order("display_order"),
     supabase.from("skill_categories").select("*").eq("visible", true).order("display_order"),
@@ -15,6 +15,7 @@ export async function getPortfolioData() {
     supabase.from("lab_entries").select("*").eq("visible", true).order("display_order"),
     supabase.from("timeline_entries").select("*").eq("visible", true).order("display_order"),
     supabase.from("social_links").select("*").eq("visible", true).order("display_order"),
+    supabase.from("learning_items").select("*").eq("visible", true).order("display_order"),
     supabase.from("site_settings").select("*").eq("id", 1).maybeSingle(),
   ]);
 
@@ -29,6 +30,7 @@ export async function getPortfolioData() {
     labs: labs.data ?? [],
     timeline: timeline.data ?? [],
     links: links.data ?? [],
+    learning: learning.data ?? [],
     settings: settings.data,
   };
 }

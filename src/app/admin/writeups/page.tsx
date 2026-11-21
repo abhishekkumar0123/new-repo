@@ -29,6 +29,29 @@ export default function Page() {
           ],
         },
         { name: "cover_image", label: "Cover image URL", type: "url" },
+        { name: "tags", label: "Tags (comma separated)", type: "textarea" },
+        {
+          name: "difficulty",
+          label: "Difficulty",
+          type: "select",
+          options: ["Beginner", "Intermediate", "Advanced", "Unrated"],
+        },
+        { name: "featured", label: "Featured", type: "checkbox" },
+        {
+          name: "read_time_minutes",
+          label: "Read time (minutes)",
+          type: "number",
+        },
+        {
+          name: "external_references",
+          label: "Reference URLs (comma separated)",
+          type: "textarea",
+        },
+        {
+          name: "related_writeup_slugs",
+          label: "Related writeup slugs (comma separated)",
+          type: "textarea",
+        },
         {
           name: "status",
           label: "Publication status",

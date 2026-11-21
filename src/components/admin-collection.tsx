@@ -19,6 +19,7 @@ const ALLOWED_TABLES = new Set([
   "media_assets",
   "contact_messages",
   "site_settings",
+  "learning_items",
 ]);
 
 export type AdminField = {
@@ -375,7 +376,35 @@ export function AdminCollection({
           ([key]) =>
             !["id", "created_at", "updated_at", "_fallback"].includes(key),
         )
-        .slice(0, 40),
+        .slice(0, 40)
+        .map(([key, value]) => {
+          const field = fields.find((item) => item.name === key);
+          if (field?.type === "number" && value !== "" && value !== null) {
+            return [key, Number(value)];
+          }
+          if (
+            [
+              "tags",
+              "external_references",
+              "related_writeup_slugs",
+              "related_skills",
+              "related_projects",
+            ].includes(key)
+          ) {
+            if (Array.isArray(value))
+              return [key, value.map(String).filter(Boolean)];
+            if (typeof value === "string") {
+              return [
+                key,
+                value
+                  .split(",")
+                  .map((item) => item.trim())
+                  .filter(Boolean),
+              ];
+            }
+          }
+          return [key, value];
+        }),
     );
     if (Object.keys(allowed).length === 0) {
       setError("No valid fields");

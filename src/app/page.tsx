@@ -21,33 +21,8 @@ import {
   type ShowcaseProject,
 } from "@/components/project-showcase";
 import { getPortfolioData } from "@/lib/portfolio-data";
-
-const skills = [
-  [
-    "Networking",
-    "TCP/IP, routing concepts, packet analysis fundamentals",
-    Network,
-  ],
-  ["Linux", "Command-line fundamentals and system navigation", TerminalIcon],
-  [
-    "Security Monitoring",
-    "Log review, alert triage, investigation workflow",
-    SearchCheck,
-  ],
-  [
-    "Security Fundamentals",
-    "CIA triad, authentication, risk and threat awareness",
-    ShieldAlert,
-  ],
-];
-
-function TerminalIcon({ size = 20 }: { size?: number }) {
-  return (
-    <span className="font-mono text-lg" style={{ fontSize: size }}>
-      ⌁
-    </span>
-  );
-}
+import { SkillsExplorer } from "@/components/skills-explorer";
+import { CertificationsTracker } from "@/components/certifications-tracker";
 
 const projects = [
   {
@@ -88,23 +63,6 @@ export default function Home() {
       .then(setPortfolio)
       .catch(() => setPortfolio(null));
   }, []);
-
-  const liveSkills = portfolio?.skills?.length
-    ? portfolio.skills.map(
-        (skill: Record<string, unknown>) =>
-          [
-            String(skill.name),
-            String(skill.description || ""),
-            String(skill.icon || "Network") === "ShieldAlert"
-              ? ShieldAlert
-              : String(skill.icon || "Network") === "SearchCheck"
-                ? SearchCheck
-                : String(skill.icon || "Network") === "Terminal"
-                  ? TerminalIcon
-                  : Network,
-          ] as const,
-      )
-    : skills;
 
   const liveProjects: ShowcaseProject[] = portfolio?.projects?.length
     ? portfolio.projects.map((project: Record<string, unknown>) => ({
@@ -252,27 +210,11 @@ export default function Home() {
               Skills &amp; foundations
             </h2>
           </div>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {liveSkills.map(([title, description, Icon]) => {
-              const Component = Icon as React.ElementType;
-              return (
-                <article
-                  key={String(title)}
-                  data-premium-card
-                  data-tilt
-                  className="premium-card glass-panel group p-6 transition hover:-translate-y-1 hover:border-[#00ff91]/30"
-                >
-                  <Component size={22} className="text-[#00ff91]" />
-                  <h3 className="mt-5 font-mono text-sm text-white">
-                    {String(title)}
-                  </h3>
-                  <p className="mt-3 text-sm leading-6 text-[#9ba8a1]">
-                    {String(description)}
-                  </p>
-                </article>
-              );
-            })}
-          </div>
+          <SkillsExplorer
+            categories={portfolio?.categories || []}
+            skills={portfolio?.skills || []}
+            projects={portfolio?.projects || []}
+          />
         </div>
       </section>
 
@@ -364,23 +306,20 @@ export default function Home() {
         id="certifications"
         className="border-y border-white/[0.06] px-5 py-24 lg:px-8"
       >
-        <div className="mx-auto grid max-w-7xl gap-8 md:grid-cols-[.7fr_1.3fr]">
-          <div>
-            <p className="font-mono text-xs uppercase tracking-[.18em] text-[#00ff91]">
+        <div className="mx-auto max-w-7xl">
+          <div className="mb-10">
+            <p className="font-mono text-xs uppercase tracking-[.18em] text-[#58d7f7]">
               // 05 — credentials
             </p>
-            <h2 className="mt-4 text-4xl font-semibold">Certifications</h2>
+            <h2 className="mt-4 text-4xl font-semibold">
+              Certifications &amp; learning
+            </h2>
           </div>
-          <div className="glass-panel flex min-h-40 items-center gap-5 p-7">
-            <FolderLock className="shrink-0 text-[#00ff91]" />
-            <div>
-              <p className="font-semibold">No certifications listed yet</p>
-              <p className="mt-2 text-sm text-[#9ba8a1]">
-                This section displays only credentials you add and verify in the
-                admin CMS.
-              </p>
-            </div>
-          </div>
+          <CertificationsTracker
+            certifications={portfolio?.certifications || []}
+            learning={portfolio?.learning || []}
+            projects={portfolio?.projects || []}
+          />
         </div>
       </section>
 
