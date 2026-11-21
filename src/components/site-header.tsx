@@ -12,6 +12,7 @@ const links = [
   ["Skills", "#skills"],
   ["Projects", "#projects"],
   ["Writeups", "#writeups"],
+  ["Vulnerabilities", "/vulnerabilities"],
   ["Certifications", "#certifications"],
   ["Contact", "#contact"],
 ];
