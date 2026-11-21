@@ -1026,11 +1026,11 @@ export function ThreatIntelDashboard() {
       {/* IOC Detail Modal */}
       {detailOpen && selectedIOC && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center"
+          className="fixed inset-0 z-[60] flex items-center justify-center"
           onClick={closeDetail}
         >
           <div
-            className="fixed inset-0 bg-black/60 backdrop-blur-sm"
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[55]"
             onClick={(e) => e.stopPropagation()}
           />
           <div
