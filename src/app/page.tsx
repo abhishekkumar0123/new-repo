@@ -23,6 +23,10 @@ import {
 import { getPortfolioData } from "@/lib/portfolio-data";
 import { SkillsExplorer } from "@/components/skills-explorer";
 import { CertificationsTracker } from "@/components/certifications-tracker";
+import { AboutSection } from "@/components/about-section";
+import { CareerTimeline } from "@/components/career-timeline";
+import { ContactSection } from "@/components/contact-section";
+import { FooterSection } from "@/components/footer-section";
 
 const projects = [
   {
@@ -154,51 +158,7 @@ export default function Home() {
         </div>
       </div>
 
-      <section
-        id="about"
-        className="border-y border-white/[0.06] px-5 py-24 lg:px-8"
-      >
-        <div className="mx-auto grid max-w-7xl gap-12 lg:grid-cols-[.75fr_1.25fr]">
-          <div>
-            <p className="font-mono text-xs uppercase tracking-[.18em] text-[#00ff91]">
-              // 01 — profile
-            </p>
-            <h2 className="mt-4 text-4xl font-semibold">About me</h2>
-          </div>
-          <div className="glass-panel p-7 sm:p-9">
-            <p className="text-lg leading-8 text-[#bdc8c2]">
-              {String(
-                portfolio?.profile?.biography ||
-                  "I am a cybersecurity fresher developing foundational knowledge for a SOC Analyst role. My current focus is on understanding networks, security telemetry, alert investigation, and clear documentation.",
-              )}
-            </p>
-            <div className="mt-7 grid gap-3 sm:grid-cols-2">
-              <div className="border border-white/[0.07] p-4">
-                <p className="font-mono text-[10px] uppercase text-[#77847e]">
-                  Current objective
-                </p>
-                <p className="mt-2 text-sm text-[#dfe7e3]">
-                  {String(
-                    portfolio?.profile?.objective ||
-                      "Secure an entry-level cybersecurity opportunity",
-                  )}
-                </p>
-              </div>
-              <div className="border border-white/[0.07] p-4">
-                <p className="font-mono text-[10px] uppercase text-[#77847e]">
-                  Learning focus
-                </p>
-                <p className="mt-2 text-sm text-[#dfe7e3]">
-                  {String(
-                    portfolio?.profile?.learning_focus ||
-                      "SOC workflows and defensive analysis",
-                  )}
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+      <AboutSection profile={portfolio?.profile} />
 
       <section id="skills" className="px-5 py-24 lg:px-8">
         <div className="mx-auto max-w-7xl">
@@ -218,10 +178,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section
-        id="projects"
-        className="border-y border-white/[0.06] px-5 py-24 lg:px-8"
-      >
+      <section id="projects" className="border-y border-white/[0.06] px-5 py-24 lg:px-8">
         <div className="mx-auto max-w-7xl">
           <div className="mb-10 flex items-end justify-between">
             <div>
@@ -323,34 +280,24 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="contact" className="px-5 py-24 lg:px-8">
-        <div className="mx-auto max-w-7xl">
-          <div className="glass-panel grid gap-8 p-7 sm:p-10 lg:grid-cols-2">
-            <div>
-              <p className="font-mono text-xs uppercase tracking-[.18em] text-[#00ff91]">
-                // 06 — secure channel
-              </p>
-              <h2 className="mt-4 text-4xl font-semibold">
-                Let&apos;s connect
-              </h2>
-              <p className="mt-5 max-w-md text-[#9ba8a1]">
-                Add your professional contact details and social links through
-                the CMS.
-              </p>
-            </div>
-            <div className="grid gap-3">
-              <ContactForm />
-            </div>
-          </div>
-        </div>
-      </section>
+      <CareerTimeline
+        timeline={portfolio?.timeline || []}
+        projects={portfolio?.projects || []}
+        certifications={portfolio?.certifications || []}
+        skills={portfolio?.skills || []}
+      />
 
-      <footer className="border-t border-white/[0.06] px-5 py-7 lg:px-8">
-        <div className="mx-auto flex max-w-7xl flex-col gap-3 font-mono text-[10px] uppercase tracking-wider text-[#77847e] sm:flex-row sm:justify-between">
-          <span>© 2026 Abhishek</span>
-          <span>Cybersecurity portfolio / sample content</span>
-        </div>
-      </footer>
+      <ContactSection
+        profile={portfolio?.profile}
+        links={portfolio?.links || []}
+        settings={portfolio?.settings}
+      />
+
+      <FooterSection
+        links={portfolio?.links || []}
+        settings={portfolio?.settings}
+        profile={portfolio?.profile}
+      />
     </main>
   );
 }

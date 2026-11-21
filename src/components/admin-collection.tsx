@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { Plus, Search, Pencil, Trash2, X, Save } from "lucide-react";
+import { Plus, Search, Pencil, Trash2, X, Save, ArrowUpRight, AlertCircle } from "lucide-react";
 import { createSupabaseBrowser } from "@/lib/supabase/browser";
 
 const ALLOWED_TABLES = new Set([
@@ -58,6 +58,8 @@ export function AdminCollection({
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [editor, setEditor] = useState<Record<string, unknown> | null>(null);
+  const [toast, setToast] = useState<{ message: string; type: "success" | "error" } | null>(null);
+  const [preview, setPreview] = useState<Record<string, unknown> | null>(null);
 
   async function load() {
     setLoading(true);
@@ -441,9 +443,12 @@ export function AdminCollection({
     const { error: mutationError } = await mutation;
     if (mutationError) {
       setError(mutationError.message);
+      setToast({ message: "Save failed: " + mutationError.message, type: "error" });
       return;
     }
     setEditor(null);
+    setToast({ message: "Changes saved successfully.", type: "success" });
+    window.setTimeout(() => setToast(null), 3000);
     await load();
   }
 
@@ -477,8 +482,14 @@ export function AdminCollection({
       .from(table)
       .delete()
       .eq("id", row.id);
-    if (deleteError) setError(deleteError.message);
-    else await load();
+    if (deleteError) {
+      setError(deleteError.message);
+      setToast({ message: "Delete failed: " + deleteError.message, type: "error" });
+    } else {
+      setToast({ message: "Record deleted.", type: "success" });
+      window.setTimeout(() => setToast(null), 3000);
+      await load();
+    }
   }
 
   function displayValue(row: Record<string, unknown>) {
@@ -530,6 +541,20 @@ export function AdminCollection({
         </div>
       )}
 
+      {toast && (
+        <div
+          role="status"
+          aria-live="polite"
+          className={`mb-4 border px-4 py-3 text-sm font-mono ${
+            toast.type === "success"
+              ? "border-[#00ff91]/25 bg-[#00ff91]/[0.05] text-[#00ff91]"
+              : "border-[#ff7b72]/25 bg-[#ff7b72]/[0.05] text-[#ff9a92]"
+          }`}
+        >
+          {toast.message}
+        </div>
+      )}
+
       {loading ? (
         <div className="glass-panel p-6 font-mono text-xs text-[#77847e]">
           Loading records...
@@ -574,6 +599,16 @@ export function AdminCollection({
                   <Pencil size={14} />
                   Edit
                 </button>
+                {["projects", "writeups", "certifications", "timeline_entries"].includes(table) && row.id !== undefined && row.slug !== undefined && (
+                  <button
+                    onClick={() => setPreview(row)}
+                    aria-label="Preview"
+                    className="inline-flex h-9 items-center gap-2 border border-white/[0.08] px-3 font-mono text-[10px] uppercase text-[#9ba8a1] hover:border-[#58d7f7]/40 hover:text-[#58d7f7]"
+                  >
+                    <ArrowUpRight size={14} />
+                    Preview
+                  </button>
+                )}
                 {row.id !== undefined && (
                   <button
                     onClick={() => void remove(row)}
@@ -730,6 +765,59 @@ export function AdminCollection({
               </button>
             </div>
           </form>
+        </div>
+      )}
+
+      {preview && (
+        <div
+          className="fixed inset-0 z-[70] grid place-items-center bg-black/70 p-4 backdrop-blur-sm"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Preview"
+        >
+          <div className="max-h-[90vh] w-full max-w-3xl overflow-y-auto border border-white/[0.09] bg-[#101915] p-6 sm:p-8 shadow-2xl">
+            <div className="mb-6 flex items-center justify-between">
+              <div>
+                <p className="font-mono text-[10px] uppercase text-[#00ff91]">
+                  Preview
+                </p>
+                <h2 className="mt-1 text-xl font-semibold">
+                  {String((preview as Record<string, string | undefined>).title ?? (preview as Record<string, string | undefined>).name ?? "Untitled")}
+                </h2>
+              </div>
+              <button
+                type="button"
+                onClick={() => setPreview(null)}
+                aria-label="Close preview"
+                className="grid size-9 place-items-center border border-white/[0.08] text-[#77847e]"
+              >
+                <X size={16} />
+              </button>
+            </div>
+            <div className="space-y-5 text-sm text-[#bdc8c2]">
+              {Object.entries(preview).map(([key, value]) => {
+                if (key === "id" || key === "created_at" || key === "updated_at" || key === "_fallback")
+                  return null;
+                if (value === null || value === undefined || value === "") return null;
+                const displayValue =
+                  Array.isArray(value)
+                    ? value.map(String).filter(Boolean).join(", ")
+                    : String(value);
+                return (
+                  <div key={key} className="border border-white/[0.06] p-3">
+                    <p className="mb-1 font-mono text-[9px] uppercase text-[#77847e]">
+                      {key.replace(/_/g, " ")}
+                    </p>
+                    <p className="break-all text-[#dfe7e3]">{displayValue}</p>
+                  </div>
+                );
+              })}
+              <p className="font-mono text-[9px] text-[#77847e] mt-4">
+                Preview shows current editor content. Unpublished drafts are not
+                visible to public visitors.
+              </p>
+            </div>
+          </div>
         </div>
       )}
     </div>

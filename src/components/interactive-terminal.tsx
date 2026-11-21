@@ -195,6 +195,62 @@ export function InteractiveTerminal({
           tone: "success",
         });
         break;
+      case "matrix":
+        next.push(
+          { text: "Initializing matrix cascade...", tone: "success" },
+          { text: "01001000 01101001 01100100 01101000 01100100 01100101 01101110", tone: "muted" },
+          { text: "Hidden layer accessed. No decryption key required.", tone: "muted" },
+          { text: "Press Ctrl+C (or type 'clear') to return.", tone: "muted" },
+        );
+        break;
+      case "secret":
+        next.push(
+          { text: "Accessing restricted memory sector...", tone: "success" },
+          { text: "SECRET://CYBER-PORTFOLIO//HIDDEN-NOTE.TXT", tone: "muted" },
+          { text: "Content: All data shown here is simulated for demonstration.", tone: "muted" },
+          { text: "No real credentials, keys, or personal data are stored in this terminal.", tone: "muted" },
+        );
+        break;
+      case "decrypt":
+        next.push(
+          { text: "Running simulated decryption routine...", tone: "success" },
+          { text: "Key derivation: simulated", tone: "muted" },
+          { text: "Ciphertext: none provided.", tone: "muted" },
+          { text: "Plaintext: decryption requires real input. This is a visual simulation only.", tone: "muted" },
+        );
+        break;
+      case "easteregg":
+        next.push(
+          { text: "You found the hidden command registry.", tone: "success" },
+          { text: "Available hidden commands: matrix, secret, decrypt, easteregg, 42, whoami --secret", tone: "muted" },
+          { text: "Try the Konami code (↑↑↓↓←→←→BA) for a full-screen reveal.", tone: "muted" },
+        );
+        break;
+      case "42":
+        next.push(
+          { text: "Querying the answer database...", tone: "success" },
+          { text: "Result: 42", tone: "muted" },
+          { text: "Question: unknown (simulated).", tone: "muted" },
+        );
+        break;
+      case "whoami":
+        if (parts.includes("--secret")) {
+          next.push({
+            text: "visitor@portfolio:~$ whoami --secret",
+            tone: "prompt",
+          });
+          next.push({
+            text: "You are a visitor exploring a cybersecurity learning portfolio.",
+            tone: "success",
+          });
+          next.push({
+            text: "No elevated identity. No hidden privileges. Just curiosity.",
+            tone: "muted",
+          });
+        } else {
+          next.push({ text: `${name} — ${title}`, tone: "success" });
+        }
+        break;
       default:
         next.push({ text: `command not found: ${action}`, tone: "error" });
     }

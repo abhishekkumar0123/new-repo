@@ -17,22 +17,28 @@ import {
   UserRound,
   Sun,
   Moon,
+  ShieldAlert,
 } from "lucide-react";
 import { AdminLogout } from "@/components/admin-logout";
 import { useEffect, useState } from "react";
 
 const links = [
-  ["Overview", "/admin", LayoutDashboard],
-  ["Projects", "/admin/projects", FolderKanban],
-  ["Skills", "/admin/skills", Layers3],
-  ["Certifications", "/admin/certifications", FileBadge],
-  ["Writeups", "/admin/writeups", BookOpen],
-  ["Labs", "/admin/labs", FlaskConical],
-  ["Timeline", "/admin/timeline", Clock3],
-  ["Messages", "/admin/messages", Mail],
-  ["Media", "/admin/media", Images],
-  ["Content", "/admin/content", UserRound],
-  ["Settings", "/admin/settings", Settings],
+  { group: "CMS", items: [
+    ["Overview", "/admin", LayoutDashboard],
+    ["Profile / About", "/admin/content", UserRound],
+    ["Projects", "/admin/projects", FolderKanban],
+    ["Skills", "/admin/skills", Layers3],
+    ["Certifications", "/admin/certifications", FileBadge],
+    ["Writeups", "/admin/writeups", BookOpen],
+    ["Labs", "/admin/labs", FlaskConical],
+    ["Timeline", "/admin/timeline", Clock3],
+    ["Contact messages", "/admin/messages", Mail],
+    ["Media", "/admin/media", Images],
+  ]},
+  { group: "SETTINGS", items: [
+    ["Website settings", "/admin/settings", Settings],
+    ["Content sections", "/admin/content", ShieldAlert],
+  ]},
 ];
 
 export default function AdminLayout({
@@ -90,19 +96,31 @@ function AdminShell({ children }: { children: React.ReactNode }) {
           </Link>
         </div>
         <nav className="grid grid-cols-2 gap-1 p-3 sm:grid-cols-3 lg:grid-cols-1 lg:p-4">
-          {links.map(([label, href, Icon]) => {
-            const Component = Icon as React.ElementType;
-            return (
-              <Link
-                key={String(href)}
-                href={String(href)}
-                className="flex items-center gap-3 rounded-md px-3 py-2.5 font-mono text-[11px] text-[#9ba8a1] transition hover:bg-[#00ff91]/[0.06] hover:text-[#00ff91]"
+          {links.flatMap(({ group, items }) => [
+            group && (
+              <div
+                key={`group-${group}`}
+                className="lg:mb-3 mb-2 border-b border-white/[0.05] pb-1"
               >
-                <Component size={15} />
-                {String(label)}
-              </Link>
-            );
-          })}
+                <p className="font-mono text-[8px] uppercase tracking-wider text-[#58d7f7]/60">
+                  {group}
+                </p>
+              </div>
+            ),
+            ...items.map(([label, href, Icon]) => {
+              const Component = Icon as React.ElementType;
+              return (
+                <Link
+                  key={String(href)}
+                  href={String(href)}
+                  className="flex items-center gap-3 rounded-md px-3 py-2.5 font-mono text-[11px] text-[#9ba8a1] transition hover:bg-[#00ff91]/[0.06] hover:text-[#00ff91]"
+                >
+                  <Component size={15} />
+                  {String(label)}
+                </Link>
+              );
+            }),
+          ])}
         </nav>
       </aside>
       <section className="min-w-0">
