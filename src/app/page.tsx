@@ -27,8 +27,7 @@ import { AboutSection } from "@/components/about-section";
 import { CareerTimeline } from "@/components/career-timeline";
 import { ContactSection } from "@/components/contact-section";
 import { FooterSection } from "@/components/footer-section";
-import { CveIntelDashboard } from "@/components/cyber-intel/cve-intel-dashboard";
-import { CyberIntelHomeCards } from "@/components/cyber-intel/cyber-intel-home-cards";
+import { CyberIntelHomeDashboard } from "@/components/cyber-intel/cyber-intel-home-dashboard";
 
 const projects = [
   {
@@ -201,9 +200,7 @@ export default function Home() {
         </div>
       </section>
 
-      <CveIntelDashboard />
-
-      <CyberIntelHomeCards />
+      <CyberIntelHomeDashboard />
 
       <InteractiveTerminal
         profile={portfolio?.profile}
