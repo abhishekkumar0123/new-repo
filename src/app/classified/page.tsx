@@ -50,14 +50,17 @@ export default function ClassifiedPage() {
 
   const startBoot = useCallback(() => {
     const interval = window.setInterval(() => {
-      setLineIndex((prev) => (prev + 1 < CLEARANCE_LINES.length ? prev + 1 : prev));
-      if (lineIndex >= CLEARANCE_LINES.length - 1) {
-        window.clearInterval(interval);
-        setBooted(true);
-      }
+      setLineIndex((prev) => {
+        const next = prev + 1 < CLEARANCE_LINES.length ? prev + 1 : prev;
+        if (next >= CLEARANCE_LINES.length - 1) {
+          setBooted(true);
+          window.clearInterval(interval);
+        }
+        return next;
+      });
     }, 120);
     bootRef.current = interval;
-  }, [lineIndex]);
+  }, []);
 
   useEffect(() => {
     startBoot();
