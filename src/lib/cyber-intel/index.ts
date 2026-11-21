@@ -46,3 +46,9 @@ export {
   withCache,
   DEFAULT_CACHE_TTL_MS,
 } from "./utils/cache";
+
+export {
+  parseCvssVector,
+  formatCvssMetricLabel,
+  type CvssVectorComponents,
+} from "./utils/cvss-vector";
