@@ -4,6 +4,8 @@ import Link from "next/link";
 import { useCallback, useRef, useState } from "react";
 import { Menu, Shield, X, Terminal } from "lucide-react";
 import { KonamiEasterEgg } from "@/components/konami-easter-egg";
+import { usePathname } from "next/navigation";
+import { cn } from "@/lib/utils";
 
 const links = [
   ["Home", "#home"],
@@ -20,6 +22,7 @@ const links = [
 ];
 
 export function SiteHeader() {
+  const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [logoSecret, setLogoSecret] = useState(0);
   const logoClicks = useRef<number>(0);
@@ -40,9 +43,14 @@ export function SiteHeader() {
     }
   }, []);
 
+  const isActive = (href: string) => {
+    if (href.startsWith("#")) return pathname === href;
+    return pathname === href || pathname.startsWith(`${href}/`);
+  };
+
   return (
     <>
-      <header className="fixed inset-x-0 top-0 z-50 border-b border-white/[0.06] bg-[#090c0b]/90 backdrop-blur-xl">
+      <header className="fixed inset-x-0 top-0 z-50 border-b border-white/[0.06] bg-[#090c0b]/80 backdrop-blur-xl">
         <div className="mx-auto flex h-[72px] max-w-7xl items-center justify-between px-5 lg:px-8">
           <Link
             href="#home"
@@ -62,7 +70,12 @@ export function SiteHeader() {
               <Link
                 key={href}
                 href={href}
-                className="rounded-md px-3 py-2 font-mono text-xs text-[#9ba8a1] transition hover:bg-[#00ff91]/[0.06] hover:text-[#00ff91]"
+                className={cn(
+                  "rounded-md px-3 py-2 font-mono text-xs transition-all",
+                  isActive(href)
+                    ? "bg-[#00ff91]/[0.12] border border-[#00ff91]/20 text-[#00ff91]"
+                    : "text-[#9ba8a1] hover:bg-[#00ff91]/[0.06] hover:text-[#00ff91]",
+                )}
               >
                 {label}
               </Link>
@@ -84,7 +97,12 @@ export function SiteHeader() {
                 key={href}
                 href={href}
                 onClick={() => setOpen(false)}
-                className="border-b border-white/[0.05] py-3 font-mono text-sm text-[#b5c0ba]"
+                className={cn(
+                  "border-b border-white/[0.05] py-3 font-mono text-sm transition-colors",
+                  isActive(href)
+                    ? "bg-[#00ff91]/[0.08] text-[#00ff91]"
+                    : "text-[#b5c0ba] hover:bg-white/[0.03] hover:text-[#00ff97]",
+                )}
               >
                 {label}
               </Link>

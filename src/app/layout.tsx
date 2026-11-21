@@ -3,6 +3,8 @@ import { SpiderWebBackground } from "@/components/spider-web-background";
 import { CursorInteractions } from "@/components/cursor-interactions";
 import { ScrollEffects } from "@/components/scroll-effects";
 import { KonamiEasterEgg } from "@/components/konami-easter-egg";
+import { ToastProvider } from "@/components/ui/toast";
+import { CommandPalette } from "@/components/command-palette";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -27,10 +29,13 @@ export default function RootLayout({
       <body>
         <SpiderWebBackground />
         <div className="site-content">
-          <CursorInteractions />
-          <ScrollEffects />
-          <KonamiEasterEgg />
-          {children}
+          <ToastProvider>
+            <CursorInteractions />
+            <ScrollEffects />
+            <KonamiEasterEgg />
+            <CommandPalette />
+            {children}
+          </ToastProvider>
         </div>
       </body>
     </html>
