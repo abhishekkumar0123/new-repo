@@ -43,7 +43,7 @@ export function SpiderWebBackground() {
 
     const createParticles = () => {
       const area = width * height;
-      const count = Math.max(32, Math.min(92, Math.round(area / 14500)));
+      const count = Math.max(38, Math.min(112, Math.round(area / 12500)));
 
       particles = Array.from({ length: count }, (_, index) => {
         const seed = index * 17.31 + width * 0.013 + height * 0.009;
@@ -122,7 +122,7 @@ export function SpiderWebBackground() {
     const draw = (time: number) => {
       context.clearRect(0, 0, width, height);
 
-      const smoothing = activePointer ? 0.065 : 0.028;
+      const smoothing = activePointer ? 0.24 : 0.07;
       focal.x += (pointer.x - focal.x) * smoothing;
       focal.y += (pointer.y - focal.y) * smoothing;
 
@@ -141,21 +141,21 @@ export function SpiderWebBackground() {
 
         const swirl =
           Math.sin(particle.phase + time * 0.00032) * 10 * pointerEnergy;
-        const pull = falloff * (activePointer ? 0.34 : 0.025);
+        const pull = falloff * (activePointer ? 0.48 : 0.035);
         const targetX =
           particle.baseX + dx * pull + (-dy / distance) * swirl + ambientX;
         const targetY =
           particle.baseY + dy * pull + (dx / distance) * swirl + ambientY;
 
-        particle.vx += (targetX - particle.x) * 0.018;
-        particle.vy += (targetY - particle.y) * 0.018;
-        particle.vx *= 0.88;
-        particle.vy *= 0.88;
+        particle.vx += (targetX - particle.x) * 0.032;
+        particle.vy += (targetY - particle.y) * 0.032;
+        particle.vx *= 0.84;
+        particle.vy *= 0.84;
         particle.x += particle.vx;
         particle.y += particle.vy;
       }
 
-      context.lineWidth = 0.55;
+      context.lineWidth = 0.72;
 
       for (let i = 0; i < particles.length; i += 1) {
         const particle = particles[i];
@@ -183,7 +183,7 @@ export function SpiderWebBackground() {
               neighbor.y,
               midpointX + nx * bend,
               midpointY + ny * bend,
-              (1 - distance / 112) * 0.105,
+              (1 - distance / 112) * 0.145,
             );
           }
         }
@@ -210,7 +210,7 @@ export function SpiderWebBackground() {
             particle.y,
             midpointX + nx * bend,
             midpointY + ny * bend,
-            (1 - focalDistance / 330) * 0.24,
+            (1 - focalDistance / 330) * 0.34,
           );
         }
       }
