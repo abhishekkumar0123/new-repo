@@ -46,6 +46,48 @@ export function CursorInteractions() {
       active: false,
     }));
 
+    const setCursorState = (element: HTMLElement | null) => {
+      cursor.classList.remove("is-hovering", "is-card", "is-input", "is-text");
+      dot.classList.remove("is-interactive", "is-card", "is-input");
+
+      if (!element) {
+        glowVisible = false;
+        return;
+      }
+
+      const textTarget = element.closest(
+        "input, textarea, [contenteditable='true']",
+      ) as HTMLElement | null;
+      if (textTarget) {
+        glowVisible = false;
+        cursor.classList.add("is-input");
+        dot.classList.add("is-input");
+        cursor.style.opacity = "0";
+        dot.style.opacity = "0";
+        return;
+      }
+
+      const interactiveTarget = element.closest(
+        "a, button, [role='button'], [role='link'], summary, label, [data-magnetic], [data-premium-card], [tabindex]:not([tabindex='-1'])",
+      ) as HTMLElement | null;
+
+      if (interactiveTarget) {
+        glowVisible = true;
+        const cardTarget = interactiveTarget.closest(
+          "article[data-premium-card], a[data-premium-card], [data-card]",
+        );
+        if (cardTarget) {
+          cursor.classList.add("is-card");
+          dot.classList.add("is-card");
+        } else {
+          cursor.classList.add("is-hovering");
+          dot.classList.add("is-interactive");
+        }
+      } else {
+        glowVisible = false;
+      }
+    };
+
     const onPointerMove = (event: Event) => {
       const detail = (event as CustomEvent<{ x: number; y: number }>).detail;
       targetX = detail.x;
@@ -68,15 +110,27 @@ export function CursorInteractions() {
     };
 
     const onPointerOver = (event: PointerEvent) => {
-      const target = (event.target as HTMLElement | null)?.closest(
-        "a, button, [role='button'], article.glass-panel",
-      );
-      glowVisible = Boolean(target);
-      cursor.classList.toggle("is-hovering", glowVisible);
+      const target =
+        event.target instanceof HTMLElement
+          ? event.target
+          : event.target instanceof SVGElement
+            ? (event.target.closest(
+                "a, button, [role='button']",
+              ) as HTMLElement | null)
+            : null;
+      setCursorState(target);
+    };
+
+    const onPointerOut = (event: PointerEvent) => {
+      const nextTarget =
+        event.relatedTarget instanceof HTMLElement ? event.relatedTarget : null;
+      setCursorState(nextTarget);
     };
 
     const onClick = (event: MouseEvent) => {
       if (event.detail === 0) return;
+      cursor.classList.add("is-pressed");
+      window.setTimeout(() => cursor.classList.remove("is-pressed"), 110);
       const ripple = document.createElement("span");
       ripple.className = "cursor-click-ripple";
       ripple.style.left = `${event.clientX}px`;
@@ -183,6 +237,7 @@ export function CursorInteractions() {
     window.addEventListener("portfolio-pointer-move", onPointerMove);
     window.addEventListener("portfolio-pointer-leave", onPointerLeave);
     document.addEventListener("pointerover", onPointerOver, { passive: true });
+    document.addEventListener("pointerout", onPointerOut, { passive: true });
     document.addEventListener("click", onClick, { passive: true });
     frame = window.requestAnimationFrame(animate);
 

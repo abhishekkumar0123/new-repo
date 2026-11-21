@@ -16,6 +16,10 @@ import {
 } from "lucide-react";
 import { InteractiveTerminal } from "@/components/interactive-terminal";
 import { ContactForm } from "@/components/contact-form";
+import {
+  ProjectShowcase,
+  type ShowcaseProject,
+} from "@/components/project-showcase";
 import { getPortfolioData } from "@/lib/portfolio-data";
 
 const skills = [
@@ -102,18 +106,35 @@ export default function Home() {
       )
     : skills;
 
-  const liveProjects = portfolio?.projects?.length
+  const liveProjects: ShowcaseProject[] = portfolio?.projects?.length
     ? portfolio.projects.map((project: Record<string, unknown>) => ({
         id: String(project.slug || project.id),
         title: String(project.title),
-        category: String(project.category || "Case file"),
+        category: String(project.category || "Other"),
         description: String(
           project.short_description || "Published investigation case file.",
         ),
         icon: FolderLock,
         isDemo: Boolean(project.is_demo),
+        featured: Boolean(project.featured),
+        status: String(project.status || "published"),
+        tools: Array.isArray(project.tools)
+          ? project.tools.map((tool) => String(tool)).filter(Boolean)
+          : [],
+        githubUrl: String(project.github_url || "") || undefined,
+        liveUrl: String(project.live_url || "") || undefined,
       }))
-    : projects;
+    : projects.map((project) => ({
+        id: project.id,
+        title: project.title,
+        category: project.category,
+        description: project.description,
+        icon: project.icon,
+        isDemo: Boolean(project.isDemo),
+        featured: false,
+        status: "Published",
+        tools: [],
+      }));
   return (
     <main>
       <SiteHeader />
@@ -275,52 +296,16 @@ export default function Home() {
                 : "3 sample entries"}
             </span>
           </div>
-          <div className="grid gap-5 lg:grid-cols-3">
-            {liveProjects.map((project) => {
-              const Icon = project.icon;
-              return (
-                <article
-                  key={project.id}
-                  data-premium-card
-                  data-tilt
-                  className="premium-card glass-panel overflow-hidden"
-                >
-                  <div className="flex h-44 items-center justify-between border-b border-white/[0.07] bg-[#0c1310] p-6">
-                    <span className="font-mono text-[10px] text-[#77847e]">
-                      CASE / {project.id}
-                    </span>
-                    <Icon size={54} className="text-[#00ff91]/35" />
-                  </div>
-                  <div className="p-6">
-                    <div className="flex items-center justify-between">
-                      <span className="border border-[#00ff91]/15 bg-[#00ff91]/[0.04] px-2 py-1 font-mono text-[9px] uppercase text-[#00ff91]">
-                        {project.category}
-                      </span>
-                      <span className="font-mono text-[9px] uppercase text-[#77847e]">
-                        {project.isDemo ? "Sample" : "Case file"}
-                      </span>
-                    </div>
-                    <h3 className="mt-5 text-xl font-semibold">
-                      {project.title}
-                    </h3>
-                    <p className="mt-3 text-sm leading-6 text-[#9ba8a1]">
-                      {project.description}
-                    </p>
-                    <Link
-                      href={`/projects/?slug=${encodeURIComponent(project.id)}`}
-                      className="mt-6 inline-flex items-center gap-2 font-mono text-xs text-[#00ff91]"
-                    >
-                      Open case file <ArrowUpRight size={14} />
-                    </Link>
-                  </div>
-                </article>
-              );
-            })}
-          </div>
+          <ProjectShowcase projects={liveProjects} />
         </div>
       </section>
 
-      <InteractiveTerminal />
+      <InteractiveTerminal
+        profile={portfolio?.profile}
+        projects={portfolio?.projects}
+        certifications={portfolio?.certifications}
+        links={portfolio?.links}
+      />
 
       <section id="writeups" className="px-5 py-24 lg:px-8">
         <div className="mx-auto max-w-7xl">
