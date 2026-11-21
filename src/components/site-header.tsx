@@ -13,6 +13,7 @@ const links = [
   ["Projects", "#projects"],
   ["Writeups", "#writeups"],
   ["Vulnerabilities", "/vulnerabilities"],
+  ["KEV Intelligence", "/kev"],
   ["Certifications", "#certifications"],
   ["Contact", "#contact"],
 ];

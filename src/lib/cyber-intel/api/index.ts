@@ -27,6 +27,7 @@ export {
   enrichCveWithEpss,
   checkFirstEpssAvailability,
   clearEpssCache,
+  fetchEpssBatch,
 } from "./epss";
 
 import type { CveIntelligenceStatus } from "../types";

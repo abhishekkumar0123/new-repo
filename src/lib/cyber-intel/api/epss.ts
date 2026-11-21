@@ -83,6 +83,55 @@ export async function enrichCveWithEpss(cve: CveRecord): Promise<CveRecord> {
   }
 }
 
+const EPSS_BATCH_CONCURRENCY = 3;
+
+async function fetchEpssBatchInternal(
+  cveIds: string[],
+  options: { signal?: AbortSignal } = {},
+): Promise<Map<string, EpssInfo | null>> {
+  const results = new Map<string, EpssInfo | null>();
+  const queue = [...cveIds];
+  const running: Promise<void>[] = [];
+
+  const runOne = async (): Promise<void> => {
+    while (queue.length > 0) {
+      if (options.signal?.aborted) return;
+      const cveId = queue.shift()!;
+      if (results.has(cveId)) continue;
+      try {
+        const info = await fetchEpssForCve(cveId);
+        results.set(cveId, info);
+      } catch {
+        results.set(cveId, null);
+      }
+    }
+  };
+
+  while (queue.length > 0 || running.length > 0) {
+    if (options.signal?.aborted) break;
+    while (running.length < EPSS_BATCH_CONCURRENCY && queue.length > 0) {
+      const p = runOne();
+      running.push(p);
+      p.then(() => {
+        const idx = running.indexOf(p);
+        if (idx !== -1) running.splice(idx, 1);
+      });
+    }
+    if (running.length === 0) break;
+    await Promise.race(running);
+  }
+
+  return results;
+}
+
+export async function fetchEpssBatch(
+  cveIds: string[],
+  options: { signal?: AbortSignal } = {},
+): Promise<Map<string, EpssInfo | null>> {
+  const unique = [...new Set(cveIds.map((id) => id.toUpperCase()))];
+  return fetchEpssBatchInternal(unique, options);
+}
+
 export async function checkFirstEpssAvailability(): Promise<SourceStatus> {
   try {
     const testId = "CVE-2021-44228";

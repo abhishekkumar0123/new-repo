@@ -13,12 +13,14 @@ export {
   checkKevStatusForCve,
   checkCisaKevAvailability,
   clearKevCache,
+  getCachedKevFeed,
 } from "./api/cisa-kev";
 
 export {
   enrichCveWithEpss,
   checkFirstEpssAvailability,
   clearEpssCache,
+  fetchEpssBatch,
 } from "./api/epss";
 
 export {
