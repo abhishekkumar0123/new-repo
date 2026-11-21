@@ -1,4 +1,5 @@
 export * from "./types";
+export * from "./types/ioc";
 
 export {
   fetchNvdCveList,
@@ -22,6 +23,28 @@ export {
   clearEpssCache,
   fetchEpssBatch,
 } from "./api/epss";
+
+export {
+  fetchUrlhausRecent,
+  fetchThreatFoxRecent,
+  searchThreatFoxIOC,
+  fetchAllThreatIntel,
+  checkThreatIntelStatus,
+  normalizeIOCs,
+  filterIOCs,
+  sortIOCs,
+  paginateIOCs,
+  buildIOCListResult,
+  getIOCTypeLabel,
+  getIOCTypeColor,
+  getClassificationColor,
+  getClassificationLabel,
+  getSourceLabel,
+  buildThreatActivity,
+  getAuthKey,
+  clearUrlhausCache,
+  clearThreatFoxCache,
+} from "./api/threat-intel";
 
 export {
   normalizeCveRecord,
