@@ -2,6 +2,7 @@ export * from "./types";
 export * from "./types/ioc";
 export * from "./types/ip-reputation";
 export * from "./types/domain-intelligence";
+export * from "./types/url-analyzer";
 
 export {
   fetchNvdCveList,
@@ -40,7 +41,6 @@ export {
   getIOCTypeLabel,
   getIOCTypeColor,
   buildThreatActivity,
-  getProxyUrl,
   clearUrlhausCache,
   clearThreatFoxCache,
 } from "./api/threat-intel";
@@ -89,6 +89,50 @@ export {
   getTld,
   formatDomainAge,
 } from "./types/domain-intelligence";
+
+export {
+  fetchAllUrlReputation,
+  checkUrlAnalyzerStatus,
+  fetchUrlhausUrl,
+  fetchVirusTotalUrl,
+  fetchPhishTankUrl,
+  fetchOpenPhishUrl,
+  fetchOtxUrl,
+  checkUrlhausAvailability,
+  checkVirusTotalAvailability,
+  checkPhishTankAvailability,
+  checkOpenPhishAvailability,
+  checkOtxAvailability,
+} from "./api/url-reputation";
+
+export {
+  analyzeUrlHeuristics,
+} from "./utils/url-heuristics";
+
+export {
+  parseUrlStructure,
+  normalizeUrl,
+  getVerdictColor,
+  getVerdictLabel,
+  getCategoryColor,
+  getCategoryLabel,
+  type UrlAnalysisResult,
+  type UrlStructure,
+  type UrlHeuristicIndicator,
+  type UrlThreatResult,
+  type UrlRedirectChain,
+  type UrlRedirectHop,
+  type UrlVerdict,
+  type UrlThreatCategory,
+  type UrlSource,
+  type UrlSearchParams,
+  type UrlLookupHistoryEntry,
+} from "./types/url-analyzer";
+
+export {
+  investigateRedirectChain,
+  quickHeadCheck,
+} from "./utils/url-redirect";
 
 export {
   normalizeCveRecord,

@@ -30,6 +30,7 @@ import { FooterSection } from "@/components/footer-section";
 import { CyberIntelHomeDashboard } from "@/components/cyber-intel/cyber-intel-home-dashboard";
 import { ThreatIntelHomePreview } from "@/components/cyber-intel/threat-intel-home-preview";
 import { DomainIntelHomePreview } from "@/components/cyber-intel/domain-intel-home-preview";
+import { UrlAnalyzerHomePreview } from "@/components/cyber-intel/url-analyzer-home-preview";
 
 const projects = [
   {
@@ -207,6 +208,8 @@ export default function Home() {
       <ThreatIntelHomePreview />
 
       <DomainIntelHomePreview />
+
+      <UrlAnalyzerHomePreview />
 
       <InteractiveTerminal
         profile={portfolio?.profile}

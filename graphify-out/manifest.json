@@ -1,0 +1,530 @@
+{
+  ".github/workflows/deploy.yml": {
+    "mtime": 1795171591.847833,
+    "seen": 1795258260.9089162,
+    "ast_hash": "af35969c24fdafc7503a53032ab02257",
+    "semantic_hash": ""
+  },
+  "eslint.config.mjs": {
+    "mtime": 1795169977.2968283,
+    "seen": 1795258260.9089231,
+    "ast_hash": "74feb738e3717cb1521714f66ec7537b",
+    "semantic_hash": ""
+  },
+  "next-env.d.ts": {
+    "mtime": 1795169977.2978282,
+    "seen": 1795258260.9089267,
+    "ast_hash": "8195d2c60ce847a459ae9d308d6a5724",
+    "semantic_hash": ""
+  },
+  "next.config.ts": {
+    "mtime": 1795169977.2978282,
+    "seen": 1795258260.9089298,
+    "ast_hash": "80deab24dfdb96f9b7d7dc1f38407ab0",
+    "semantic_hash": ""
+  },
+  "package.json": {
+    "mtime": 1795147934.1224623,
+    "seen": 1795258260.908933,
+    "ast_hash": "11b7ae3708a575ef7afcb28002f8bc94",
+    "semantic_hash": ""
+  },
+  "postcss.config.mjs": {
+    "mtime": 1795147934.3674634,
+    "seen": 1795258260.908936,
+    "ast_hash": "0f8aa602547b154dc06be77b007c51d2",
+    "semantic_hash": ""
+  },
+  "src/app/admin/certifications/page.tsx": {
+    "mtime": 1795243479.8763528,
+    "seen": 1795258260.9089394,
+    "ast_hash": "1db3985834a5e78a27daa2338357f831",
+    "semantic_hash": ""
+  },
+  "src/app/admin/content/page.tsx": {
+    "mtime": 1795149755.92826,
+    "seen": 1795258260.9089417,
+    "ast_hash": "c461e58f4aa147a874d3a694a3f021dc",
+    "semantic_hash": ""
+  },
+  "src/app/admin/labs/page.tsx": {
+    "mtime": 1795149756.0282607,
+    "seen": 1795258260.9089453,
+    "ast_hash": "12eaa70ba988375e3a578e94808dd780",
+    "semantic_hash": ""
+  },
+  "src/app/admin/layout.tsx": {
+    "mtime": 1795245830.7005053,
+    "seen": 1795258260.908948,
+    "ast_hash": "7d154e9cbe1089579461d7b9c2df6abb",
+    "semantic_hash": ""
+  },
+  "src/app/admin/login/page.tsx": {
+    "mtime": 1795171450.043641,
+    "seen": 1795258260.9089506,
+    "ast_hash": "6159beb67834e422017c4e275f7710e3",
+    "semantic_hash": ""
+  },
+  "src/app/admin/media/page.tsx": {
+    "mtime": 1795169977.2988284,
+    "seen": 1795258260.908954,
+    "ast_hash": "579f6e8132efa423e2dc151860d70429",
+    "semantic_hash": ""
+  },
+  "src/app/admin/messages/page.tsx": {
+    "mtime": 1795149755.9172602,
+    "seen": 1795258260.9089565,
+    "ast_hash": "81541a65ca8dd98a2e88852bfa83799d",
+    "semantic_hash": ""
+  },
+  "src/app/admin/page.tsx": {
+    "mtime": 1795246003.357756,
+    "seen": 1795258260.908959,
+    "ast_hash": "d425bf5b9f5b2a9d96d7c84ac1256ec4",
+    "semantic_hash": ""
+  },
+  "src/app/admin/projects/page.tsx": {
+    "mtime": 1795149705.989994,
+    "seen": 1795258260.9089618,
+    "ast_hash": "7637d92542f2893e4df7ea7ffcbb0e4f",
+    "semantic_hash": ""
+  },
+  "src/app/admin/reset-password/page.tsx": {
+    "mtime": 1795169977.2988284,
+    "seen": 1795258260.9089642,
+    "ast_hash": "7a2757b83465ca946fe57fa4228354c7",
+    "semantic_hash": ""
+  },
+  "src/app/admin/settings/page.tsx": {
+    "mtime": 1795149755.9742603,
+    "seen": 1795258260.9089665,
+    "ast_hash": "9c61abae845dbc216aae693078e37562",
+    "semantic_hash": ""
+  },
+  "src/app/admin/skills/page.tsx": {
+    "mtime": 1795149760.5232844,
+    "seen": 1795258260.9089694,
+    "ast_hash": "73dea918af61f33e801155a8afc7ceda",
+    "semantic_hash": ""
+  },
+  "src/app/admin/timeline/page.tsx": {
+    "mtime": 1795245211.6114678,
+    "seen": 1795258260.9089725,
+    "ast_hash": "002056a21a4d3529eb772ae9321f6bc1",
+    "semantic_hash": ""
+  },
+  "src/app/admin/writeups/page.tsx": {
+    "mtime": 1795243670.5107436,
+    "seen": 1795258260.9089751,
+    "ast_hash": "eb5e44e2455817ea312f5bbbb1821b34",
+    "semantic_hash": ""
+  },
+  "src/app/auth/callback/page.tsx": {
+    "mtime": 1795169977.2988284,
+    "seen": 1795258260.9089777,
+    "ast_hash": "a03adff2c27c31f8921a9c7ff4918497",
+    "semantic_hash": ""
+  },
+  "src/app/classified/page.tsx": {
+    "mtime": 1795249736.9264882,
+    "seen": 1795258260.9089801,
+    "ast_hash": "cf33cae184f2da47c1f4f019a78c0135",
+    "semantic_hash": ""
+  },
+  "src/app/cyber-intelligence/page.tsx": {
+    "mtime": 1795250609.8699198,
+    "seen": 1795258260.908984,
+    "ast_hash": "57b969bcabb7bb7c16909e1137c5e761",
+    "semantic_hash": ""
+  },
+  "src/app/kev/page.tsx": {
+    "mtime": 1795254677.8028195,
+    "seen": 1795258260.9089866,
+    "ast_hash": "6736e89899da9b1fe09c9ef7460cc6da",
+    "semantic_hash": ""
+  },
+  "src/app/layout.tsx": {
+    "mtime": 1795245737.403056,
+    "seen": 1795258260.9089894,
+    "ast_hash": "9470acf9e087fbaa289fd1ad630b55cb",
+    "semantic_hash": ""
+  },
+  "src/app/network-topology/page.tsx": {
+    "mtime": 1795241026.2771094,
+    "seen": 1795258260.908992,
+    "ast_hash": "aef2e63531954b18e367f2dec9e2f646",
+    "semantic_hash": ""
+  },
+  "src/app/page.tsx": {
+    "mtime": 1795257950.0618987,
+    "seen": 1795258260.9089942,
+    "ast_hash": "bba5bd114b767d304aac713bdddf5578",
+    "semantic_hash": ""
+  },
+  "src/app/projects/page.tsx": {
+    "mtime": 1795169977.2998283,
+    "seen": 1795258260.9089968,
+    "ast_hash": "5483d3c87add09e7e294dcdde2b36d6c",
+    "semantic_hash": ""
+  },
+  "src/app/soc-simulator/page.tsx": {
+    "mtime": 1795241026.1591086,
+    "seen": 1795258260.909,
+    "ast_hash": "e4be3dd0a7d8cdefe46859097a232985",
+    "semantic_hash": ""
+  },
+  "src/app/threat-intelligence/page.tsx": {
+    "mtime": 1795257894.3623798,
+    "seen": 1795258260.9090025,
+    "ast_hash": "38569df0f80d2379bc86f742c57f6600",
+    "semantic_hash": ""
+  },
+  "src/app/vulnerabilities/[cveId]/cve-detail-page-client.tsx": {
+    "mtime": 1795256533.6698494,
+    "seen": 1795258260.9090056,
+    "ast_hash": "5247f4fd7c22f1077231b803e84ac143",
+    "semantic_hash": ""
+  },
+  "src/app/vulnerabilities/[cveId]/page.tsx": {
+    "mtime": 1795256528.8237822,
+    "seen": 1795258260.9090085,
+    "ast_hash": "e3afb191c8e520a2708cbd464ce74009",
+    "semantic_hash": ""
+  },
+  "src/app/vulnerabilities/page.tsx": {
+    "mtime": 1795251733.2995899,
+    "seen": 1795258260.909011,
+    "ast_hash": "27e411a9001e09bfe0f096413353f29d",
+    "semantic_hash": ""
+  },
+  "src/app/writeups/page.tsx": {
+    "mtime": 1795243223.2551198,
+    "seen": 1795258260.9090135,
+    "ast_hash": "5fc7f8b30d1560952ba23e10c39e4bb1",
+    "semantic_hash": ""
+  },
+  "src/components/about-section.tsx": {
+    "mtime": 1795245323.9584887,
+    "seen": 1795258260.9090161,
+    "ast_hash": "4d8b9a21015f88318cbf35584d9c7a41",
+    "semantic_hash": ""
+  },
+  "src/components/admin-collection.tsx": {
+    "mtime": 1795246102.361874,
+    "seen": 1795258260.9090185,
+    "ast_hash": "998cce79430af3ca8d69c06352608d97",
+    "semantic_hash": ""
+  },
+  "src/components/admin-guard.tsx": {
+    "mtime": 1795173572.6623178,
+    "seen": 1795258260.909021,
+    "ast_hash": "13e74fc36e609dc0f95663dcebc17b71",
+    "semantic_hash": ""
+  },
+  "src/components/admin-logout.tsx": {
+    "mtime": 1795169977.2998283,
+    "seen": 1795258260.9090238,
+    "ast_hash": "df0c375e1336a1c58be8afb8cd8b8d75",
+    "semantic_hash": ""
+  },
+  "src/components/admin-placeholder.tsx": {
+    "mtime": 1795148631.0635974,
+    "seen": 1795258260.9090264,
+    "ast_hash": "b53239f3403a71baf569b72203a85475",
+    "semantic_hash": ""
+  },
+  "src/components/career-timeline.tsx": {
+    "mtime": 1795245504.2866294,
+    "seen": 1795258260.9090295,
+    "ast_hash": "71d38a523cffdfb1f558edfde4fd47c9",
+    "semantic_hash": ""
+  },
+  "src/components/certifications-tracker.tsx": {
+    "mtime": 1795243753.78709,
+    "seen": 1795258260.9090319,
+    "ast_hash": "6afd760606a002ff70da6438e0db757c",
+    "semantic_hash": ""
+  },
+  "src/components/contact-form.tsx": {
+    "mtime": 1795245344.534853,
+    "seen": 1795258260.9090343,
+    "ast_hash": "3069a25fd56cdfaf984eaf2c9f3e7e01",
+    "semantic_hash": ""
+  },
+  "src/components/contact-section.tsx": {
+    "mtime": 1795245359.2121117,
+    "seen": 1795258260.9090374,
+    "ast_hash": "1db412c15aeaf32b7f6e81f083dfeea7",
+    "semantic_hash": ""
+  },
+  "src/components/cursor-interactions.tsx": {
+    "mtime": 1795241026.1591086,
+    "seen": 1795258260.9090412,
+    "ast_hash": "15d7b4fbdd3cf71432c97f9e340eab75",
+    "semantic_hash": ""
+  },
+  "src/components/cyber-intel/cve-card.tsx": {
+    "mtime": 1795254369.9377542,
+    "seen": 1795258260.909044,
+    "ast_hash": "b1088f4bdbfcba9429bfca651646fa87",
+    "semantic_hash": ""
+  },
+  "src/components/cyber-intel/cve-detail.tsx": {
+    "mtime": 1795254356.432628,
+    "seen": 1795258260.909047,
+    "ast_hash": "0a3372df7dac09e76f1e960c4aaedd26",
+    "semantic_hash": ""
+  },
+  "src/components/cyber-intel/cve-explorer.tsx": {
+    "mtime": 1795256389.1420712,
+    "seen": 1795258260.9090493,
+    "ast_hash": "0a653f302d8144ec8d9cbc526b4d0cd4",
+    "semantic_hash": ""
+  },
+  "src/components/cyber-intel/cve-intel-dashboard.tsx": {
+    "mtime": 1795253649.7572625,
+    "seen": 1795258260.9090521,
+    "ast_hash": "ceab8e5eccf220f5bf2415a4e59b8f8c",
+    "semantic_hash": ""
+  },
+  "src/components/cyber-intel/cve-intelligence-entry.tsx": {
+    "mtime": 1795250600.098862,
+    "seen": 1795258260.9090555,
+    "ast_hash": "1951cc52fcb9e8e66434bf8c63ac9fac",
+    "semantic_hash": ""
+  },
+  "src/components/cyber-intel/cyber-intel-home-cards.tsx": {
+    "mtime": 1795255019.7746878,
+    "seen": 1795258260.909058,
+    "ast_hash": "c0b205db13a05c074dba6442487ac814",
+    "semantic_hash": ""
+  },
+  "src/components/cyber-intel/cyber-intel-home-dashboard.tsx": {
+    "mtime": 1795256156.425187,
+    "seen": 1795258260.909061,
+    "ast_hash": "640729a4d9b8bfb1edeb79f721e53667",
+    "semantic_hash": ""
+  },
+  "src/components/cyber-intel/kev-intelligence-center.tsx": {
+    "mtime": 1795255206.0839205,
+    "seen": 1795258260.9090633,
+    "ast_hash": "4fcf7eaaa85ac9c18aca56d187cdae6e",
+    "semantic_hash": ""
+  },
+  "src/components/cyber-intel/threat-intel-dashboard.tsx": {
+    "mtime": 1795258166.8549023,
+    "seen": 1795258260.9090664,
+    "ast_hash": "42120a8ec75055e75794976354dc721a",
+    "semantic_hash": ""
+  },
+  "src/components/cyber-intel/threat-intel-home-preview.tsx": {
+    "mtime": 1795257929.9537115,
+    "seen": 1795258260.9090693,
+    "ast_hash": "45cd7017fc34f3c304367984eea18aaa",
+    "semantic_hash": ""
+  },
+  "src/components/footer-section.tsx": {
+    "mtime": 1795245377.2834294,
+    "seen": 1795258260.909072,
+    "ast_hash": "b1d90ed723c7efdf80ce2c0fd6f1f2c4",
+    "semantic_hash": ""
+  },
+  "src/components/hero.tsx": {
+    "mtime": 1795236906.8444388,
+    "seen": 1795258260.9090748,
+    "ast_hash": "6ed03bb7e35f1d0188881798dcf4e601",
+    "semantic_hash": ""
+  },
+  "src/components/interactive-terminal.tsx": {
+    "mtime": 1795245729.5863907,
+    "seen": 1795258260.9090772,
+    "ast_hash": "594e46e3f2b920ff1944d8d6742a7d4c",
+    "semantic_hash": ""
+  },
+  "src/components/konami-easter-egg.tsx": {
+    "mtime": 1795246185.3626702,
+    "seen": 1795258260.90908,
+    "ast_hash": "269895e10229d5a5aed9af975aa7af0a",
+    "semantic_hash": ""
+  },
+  "src/components/project-detail.tsx": {
+    "mtime": 1795241954.6445663,
+    "seen": 1795258260.9090827,
+    "ast_hash": "b0d9bdc4d15f7b6582c814680f8ef2ad",
+    "semantic_hash": ""
+  },
+  "src/components/project-showcase.tsx": {
+    "mtime": 1795241697.1746008,
+    "seen": 1795258260.9090853,
+    "ast_hash": "02b8e67fec48605a33446e433a94210c",
+    "semantic_hash": ""
+  },
+  "src/components/scroll-effects.tsx": {
+    "mtime": 1795237214.112188,
+    "seen": 1795258260.909088,
+    "ast_hash": "1d89085c26415683aed8837a24f7b053",
+    "semantic_hash": ""
+  },
+  "src/components/site-header.tsx": {
+    "mtime": 1795257900.364436,
+    "seen": 1795258260.9090903,
+    "ast_hash": "2f8fbda2a01746c75776ff332c4072fc",
+    "semantic_hash": ""
+  },
+  "src/components/skills-explorer.tsx": {
+    "mtime": 1795242612.4834187,
+    "seen": 1795258260.909093,
+    "ast_hash": "fc98caf70dc09053efbf5e4cbcc25472",
+    "semantic_hash": ""
+  },
+  "src/components/spider-web-background.tsx": {
+    "mtime": 1795235975.0813766,
+    "seen": 1795258260.9090955,
+    "ast_hash": "17e024f0b98e30a80305b427c0c38357",
+    "semantic_hash": ""
+  },
+  "src/components/writeup-detail.tsx": {
+    "mtime": 1795243753.78809,
+    "seen": 1795258260.9090984,
+    "ast_hash": "cc64431bc77dbe2ce48be65f0d1c7c37",
+    "semantic_hash": ""
+  },
+  "src/components/writeups-hub.tsx": {
+    "mtime": 1795243753.78809,
+    "seen": 1795258260.9091008,
+    "ast_hash": "bda59195ccf4b2a5a532d429a1a9b2e4",
+    "semantic_hash": ""
+  },
+  "src/lib/base-path.ts": {
+    "mtime": 1795169977.3008282,
+    "seen": 1795258260.9091034,
+    "ast_hash": "bf7a7c7ac235cb5eb0aa1d0bd086fe71",
+    "semantic_hash": ""
+  },
+  "src/lib/cyber-intel/api/cisa-kev.ts": {
+    "mtime": 1795250527.5064409,
+    "seen": 1795258260.9091058,
+    "ast_hash": "4f17cde0ba13287943b015dde8a80b68",
+    "semantic_hash": ""
+  },
+  "src/lib/cyber-intel/api/epss.ts": {
+    "mtime": 1795254591.3434668,
+    "seen": 1795258260.9091082,
+    "ast_hash": "4c6ca8bb1c1b6d15318fc550e401cd22",
+    "semantic_hash": ""
+  },
+  "src/lib/cyber-intel/api/index.ts": {
+    "mtime": 1795254601.9265065,
+    "seen": 1795258260.9091108,
+    "ast_hash": "34d9b29cd47658c44f5dd3fb1b5ff9ea",
+    "semantic_hash": ""
+  },
+  "src/lib/cyber-intel/api/nvd.ts": {
+    "mtime": 1795250954.8571093,
+    "seen": 1795258260.9091136,
+    "ast_hash": "4744796fbf6991ce0420046f0dc2d070",
+    "semantic_hash": ""
+  },
+  "src/lib/cyber-intel/api/threat-intel.ts": {
+    "mtime": 1795257982.5972009,
+    "seen": 1795258260.9091165,
+    "ast_hash": "dc5040fa6674286c255618a6c94237a4",
+    "semantic_hash": ""
+  },
+  "src/lib/cyber-intel/api/threatfox.ts": {
+    "mtime": 1795257752.6840503,
+    "seen": 1795258260.9091187,
+    "ast_hash": "81f4c26ffb66b094654ef3c72a099115",
+    "semantic_hash": ""
+  },
+  "src/lib/cyber-intel/api/urlhaus.ts": {
+    "mtime": 1795257727.3078105,
+    "seen": 1795258260.9091213,
+    "ast_hash": "1144e349cc17981917b00fea8f61b3cc",
+    "semantic_hash": ""
+  },
+  "src/lib/cyber-intel/index.ts": {
+    "mtime": 1795257803.190526,
+    "seen": 1795258260.9091241,
+    "ast_hash": "37ac355c6ba5a4c33aa283ba0ba3e6e0",
+    "semantic_hash": ""
+  },
+  "src/lib/cyber-intel/types/index.ts": {
+    "mtime": 1795250498.2072759,
+    "seen": 1795258260.9091268,
+    "ast_hash": "ac9ff98eb841e009ede3d674326886ae",
+    "semantic_hash": ""
+  },
+  "src/lib/cyber-intel/types/ioc.ts": {
+    "mtime": 1795257711.0546565,
+    "seen": 1795258260.9091291,
+    "ast_hash": "e05cb00b932d5ab8b9b4152956952c00",
+    "semantic_hash": ""
+  },
+  "src/lib/cyber-intel/utils/cache.ts": {
+    "mtime": 1795250951.5540872,
+    "seen": 1795258260.9091318,
+    "ast_hash": "e8d3df9cca26b69f3853192f8fea0d48",
+    "semantic_hash": ""
+  },
+  "src/lib/cyber-intel/utils/cvss-vector.ts": {
+    "mtime": 1795254365.3057108,
+    "seen": 1795258260.9091344,
+    "ast_hash": "2ebeffb858918844ff0f028a255f6ab3",
+    "semantic_hash": ""
+  },
+  "src/lib/cyber-intel/utils/index.ts": {
+    "mtime": 1795250570.134686,
+    "seen": 1795258260.9091377,
+    "ast_hash": "c7150d9c1d2db75099172fe474e2ea89",
+    "semantic_hash": ""
+  },
+  "src/lib/cyber-intel/utils/normalize.ts": {
+    "mtime": 1795250559.8206263,
+    "seen": 1795258260.9091406,
+    "ast_hash": "f495f4754ed1da89f0a85c2ee9288fd7",
+    "semantic_hash": ""
+  },
+  "src/lib/portfolio-data.ts": {
+    "mtime": 1795243269.1183376,
+    "seen": 1795258260.909143,
+    "ast_hash": "15fa61bad08f7f61a3a6607c872c89f6",
+    "semantic_hash": ""
+  },
+  "src/lib/supabase/browser.ts": {
+    "mtime": 1795171417.105302,
+    "seen": 1795258260.9091456,
+    "ast_hash": "33fa1d5b654da7b7c538a837276d9a8c",
+    "semantic_hash": ""
+  },
+  "tsconfig.json": {
+    "mtime": 1795148189.5226138,
+    "seen": 1795258260.9091482,
+    "ast_hash": "ab158c19f221f4dcf1d7c3b20719569b",
+    "semantic_hash": ""
+  },
+  "CVE_INTELLIGENCE.md": {
+    "mtime": 1795250629.009034,
+    "seen": 1795258260.9091508,
+    "ast_hash": "6691d7c04d4ca3520747cf7f2c85185f",
+    "semantic_hash": ""
+  },
+  "README.md": {
+    "mtime": 1795173572.0383046,
+    "seen": 1795258260.909153,
+    "ast_hash": "e5c62eca05ac45feae1dcced0673951f",
+    "semantic_hash": ""
+  },
+  "new/.github/copilot-instructions.md": {
+    "mtime": 1795147934.1284623,
+    "seen": 1795258260.9091568,
+    "ast_hash": "8f6bc524380d0b7b1cd1f9208bdeedd5",
+    "semantic_hash": ""
+  },
+  "package-lock.json": {
+    "mtime": 1795148102.926224,
+    "seen": 1795258260.9091594,
+    "ast_hash": "d0ada7e4bc08976b0372d58a60003526",
+    "semantic_hash": ""
+  }
+}

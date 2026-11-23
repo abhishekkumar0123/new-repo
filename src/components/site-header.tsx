@@ -19,6 +19,7 @@ const links = [
   ["Threat Intelligence", "/threat-intelligence"],
   ["Domain Intelligence", "/domain-intelligence"],
   ["IP Reputation", "/ip-reputation"],
+  ["URL Analyzer", "/url-analyzer"],
   ["Certifications", "#certifications"],
   ["Contact", "#contact"],
 ];
