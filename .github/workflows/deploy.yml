@@ -44,6 +44,7 @@ jobs:
           NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL || vars.NEXT_PUBLIC_SUPABASE_URL }}
           NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY || vars.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
           NEXT_PUBLIC_THREAT_INTEL_PROXY_URL: ${{ vars.NEXT_PUBLIC_THREAT_INTEL_PROXY_URL || 'https://irzlulgjjfwlsjnxplru.supabase.co/functions/v1/threat-intel-proxy' }}
+          NEXT_PUBLIC_DOMAIN_INTEL_PROXY_URL: ${{ vars.NEXT_PUBLIC_DOMAIN_INTEL_PROXY_URL || 'https://irzlulgjjfwlsjnxplru.supabase.co/functions/v1/domain-intel-proxy' }}
         run: npm run build
       - uses: actions/upload-pages-artifact@v5
         with:

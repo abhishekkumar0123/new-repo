@@ -1,6 +1,7 @@
 export * from "./types";
 export * from "./types/ioc";
 export * from "./types/ip-reputation";
+export * from "./types/domain-intelligence";
 
 export {
   fetchNvdCveList,
@@ -68,6 +69,26 @@ export {
   type IPLookupParams,
   type IPLookupHistoryEntry,
 } from "./types/ip-reputation";
+
+export {
+  fetchDomainIntelligence,
+  checkDomainIntelStatus,
+  clearDomainIntelCache,
+  getCachedDomainIntelligence,
+  addToDomainHistory,
+  getDomainHistory,
+  clearDomainHistory,
+  exportDomainInvestigation,
+  getSourceColor,
+} from "./api/domain-intelligence";
+
+export {
+  extractDomain,
+  getRootDomain,
+  getSubdomain,
+  getTld,
+  formatDomainAge,
+} from "./types/domain-intelligence";
 
 export {
   normalizeCveRecord,

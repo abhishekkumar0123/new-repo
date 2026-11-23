@@ -16,6 +16,7 @@ import {
   OTXData,
   IPReputationSource,
 } from "../types/ip-reputation";
+import { DomainIntelSource } from "../types/domain-intelligence";
 import { escapeHtml } from "../utils/normalize";
 
 const IP_REPUTATION_PROXY_URL = typeof process !== "undefined" && process.env
@@ -758,15 +759,20 @@ export function exportInvestigation(result: IPReputationResult): string {
   return JSON.stringify(result, null, 2);
 }
 
-export function getSourceLabel(source: IPReputationSource): string {
-  const labels: Record<IPReputationSource, string> = {
+export function getSourceLabel(source: IPReputationSource | DomainIntelSource): string {
+  const labels: Record<string, string> = {
     abuseipdb: "AbuseIPDB",
     virustotal: "VirusTotal",
     greynoise: "GreyNoise",
     ipinfo: "IPinfo",
     otx: "AlienVault OTX",
+    "dns-doh": "DNS over HTTPS",
+    rdap: "RDAP",
+    "certificate-transparency": "Certificate Transparency",
+    urlhaus: "URLhaus",
+    threatfox: "ThreatFox",
   };
-  return labels[source];
+  return labels[source] ?? source;
 }
 
 export function getRiskColor(risk: RiskLevel): string {
