@@ -1,5 +1,6 @@
 export * from "./types";
 export * from "./types/ioc";
+export * from "./types/ip-reputation";
 
 export {
   fetchNvdCveList,
@@ -37,14 +38,36 @@ export {
   buildIOCListResult,
   getIOCTypeLabel,
   getIOCTypeColor,
-  getClassificationColor,
-  getClassificationLabel,
-  getSourceLabel,
   buildThreatActivity,
   getProxyUrl,
   clearUrlhausCache,
   clearThreatFoxCache,
 } from "./api/threat-intel";
+
+export {
+  fetchIPReputation,
+  checkIPReputationSourceStatus,
+  clearIPReputationCache,
+  getCachedIPReputation,
+  addToHistory,
+  getHistory,
+  clearHistory,
+  exportInvestigation,
+  validateIP,
+  getRiskColor,
+  getRiskLabel,
+  getClassificationColor,
+  getClassificationLabel,
+  getSourceLabel,
+} from "./api/ip-reputation";
+
+export {
+  type IPReputationResult,
+  type IPReputationSourceStatus,
+  type IPReputationStatus,
+  type IPLookupParams,
+  type IPLookupHistoryEntry,
+} from "./types/ip-reputation";
 
 export {
   normalizeCveRecord,

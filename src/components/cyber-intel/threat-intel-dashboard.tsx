@@ -29,10 +29,8 @@ import {
   getClassificationColor,
   getClassificationLabel,
   getSourceLabel,
-  type IOCRecord,
-  type IOCSearchParams,
-  type ThreatIntelStatus,
-} from "@/lib/cyber-intel";
+} from "@/lib/cyber-intel/api/threat-intel";
+import type { IOCRecord, IOCSearchParams, ThreatIntelStatus, ThreatIntelSourceStatus } from "@/lib/cyber-intel/types/ioc";
 
 const DEFAULT_FILTERS: IOCSearchParams = {
   query: "",
@@ -286,9 +284,9 @@ export function ThreatIntelDashboard() {
   const urlhausIOCs = stats.bySource.urlhaus || 0;
   const threatfoxIOCs = stats.bySource.threatfox || 0;
 
-  const availableSources = status?.sources.filter((s) => s.available).length ?? 0;
+  const availableSources = status?.sources.filter((s: { available: boolean }) => s.available).length ?? 0;
   const totalSources = status?.sources.length ?? 0;
-  const configuredSources = status?.sources.filter((s) => !s.requiresConfiguration).length ?? 0;
+  const configuredSources = status?.sources.filter((s: { requiresConfiguration: boolean }) => !s.requiresConfiguration).length ?? 0;
 
   if (error && !allIOCs.length) {
     return (
@@ -541,7 +539,7 @@ export function ThreatIntelDashboard() {
               </div>
             </div>
             <div className="grid gap-3 md:grid-cols-2">
-              {status?.sources.map((source) => {
+              {status?.sources.map((source: ThreatIntelSourceStatus) => {
                 const available = source.available;
                 const rateLimited = source.rateLimited;
                 const requiresConfig = source.requiresConfiguration;
@@ -600,7 +598,7 @@ export function ThreatIntelDashboard() {
                 );
               })}
             </div>
-            {status?.sources.some((s) => s.requiresConfiguration) && (
+            {status?.sources.some((s: { requiresConfiguration: boolean }) => s.requiresConfiguration) && (
               <div className="mt-4 p-3 border border-[#ffca8a]/20 bg-[#ffca8a]/[0.05] rounded-md">
                 <p className="font-mono text-[9px] text-[#ffca8a]">
                   Some threat feeds require an abuse.ch Auth-Key. Get a free key

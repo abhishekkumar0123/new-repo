@@ -11,7 +11,7 @@ import {
   getSourceLabel,
   getClassificationLabel,
   type IOCRecord,
-} from "@/lib/cyber-intel";
+} from "@/lib/cyber-intel/api/threat-intel";
 
 function formatDateShort(dateString: string | null): string {
   if (!dateString) return "Not available";

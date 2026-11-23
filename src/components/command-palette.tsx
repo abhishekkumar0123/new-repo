@@ -98,6 +98,12 @@ const COMMANDS: CommandItem[] = [
     subtitle: "CVE, KEV, and EPSS intelligence overview",
     href: "/cyber-intelligence",
   },
+  {
+    id: "ip-reputation",
+    title: "IP Reputation Lookup",
+    subtitle: "IP investigation across threat intelligence sources",
+    href: "/ip-reputation",
+  },
 ];
 
 const typeSpeed = 30;
