@@ -106,6 +106,22 @@ export {
 } from "./api/url-reputation";
 
 export {
+  fetchHashLookup,
+  checkHashLookupStatus,
+  fetchMalwareBazaarHash,
+  fetchVirusTotalHash,
+  fetchOTXHash,
+  fetchThreatFoxHash,
+  fetchURLhausHash,
+  clearHashCache,
+  getCachedHashLookup,
+  addToHashHistory,
+  getHashHistory,
+  clearHashHistory,
+  exportHashInvestigation,
+} from "./api/hash-lookup";
+
+export {
   analyzeUrlHeuristics,
 } from "./utils/url-heuristics";
 

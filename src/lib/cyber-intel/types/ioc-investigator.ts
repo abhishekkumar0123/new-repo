@@ -49,6 +49,7 @@ export interface HashLookupResult {
   isCached: boolean;
   error: string | null;
   fetchedAt: string;
+  scanDuration?: number;
 }
 
 export interface IOCEnrichmentResult {

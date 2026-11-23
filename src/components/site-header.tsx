@@ -20,6 +20,7 @@ const links = [
   ["Domain Intelligence", "/domain-intelligence"],
   ["IP Reputation", "/ip-reputation"],
   ["URL Analyzer", "/url-analyzer"],
+  ["Hash Lookup", "/hash-lookup"],
   ["Certifications", "#certifications"],
   ["Contact", "#contact"],
 ];

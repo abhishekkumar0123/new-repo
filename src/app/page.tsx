@@ -31,6 +31,7 @@ import { CyberIntelHomeDashboard } from "@/components/cyber-intel/cyber-intel-ho
 import { ThreatIntelHomePreview } from "@/components/cyber-intel/threat-intel-home-preview";
 import { DomainIntelHomePreview } from "@/components/cyber-intel/domain-intel-home-preview";
 import { UrlAnalyzerHomePreview } from "@/components/cyber-intel/url-analyzer-home-preview";
+import { HashLookupHomePreview } from "@/components/cyber-intel/hash-lookup-home-preview";
 
 const projects = [
   {
@@ -210,6 +211,8 @@ export default function Home() {
       <DomainIntelHomePreview />
 
       <UrlAnalyzerHomePreview />
+
+      <HashLookupHomePreview />
 
       <InteractiveTerminal
         profile={portfolio?.profile}
