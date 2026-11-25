@@ -47,6 +47,8 @@ jobs:
           NEXT_PUBLIC_DOMAIN_INTEL_PROXY_URL: ${{ vars.NEXT_PUBLIC_DOMAIN_INTEL_PROXY_URL || 'https://irzlulgjjfwlsjnxplru.supabase.co/functions/v1/domain-intel-proxy' }}
           NEXT_PUBLIC_URL_ANALYZER_PROXY_URL: ${{ vars.NEXT_PUBLIC_URL_ANALYZER_PROXY_URL || 'https://irzlulgjjfwlsjnxplru.supabase.co/functions/v1/url-analyzer-proxy' }}
           NEXT_PUBLIC_HASH_LOOKUP_PROXY_URL: ${{ vars.NEXT_PUBLIC_HASH_LOOKUP_PROXY_URL || 'https://irzlulgjjfwlsjnxplru.supabase.co/functions/v1/hash-lookup-proxy' }}
+          NEXT_PUBLIC_IOC_ENRICHMENT_PROXY_URL: ${{ vars.NEXT_PUBLIC_IOC_ENRICHMENT_PROXY_URL || 'https://irzlulgjjfwlsjnxplru.supabase.co/functions/v1/ioc-enrichment-proxy' }}
+          NEXT_PUBLIC_CERT_INSPECTOR_PROXY_URL: ${{ vars.NEXT_PUBLIC_CERT_INSPECTOR_PROXY_URL || 'https://irzlulgjjfwlsjnxplru.supabase.co/functions/v1/cert-inspector-proxy' }}
         run: npm run build
       - uses: actions/upload-pages-artifact@v5
         with:

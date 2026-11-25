@@ -160,7 +160,7 @@ export interface IOCEnrichmentParams {
 }
 
 export interface CertificateInspectorParams {
-  hostname: string;
+  hostname?: string;
   fingerprint?: string;
   forceRefresh?: boolean;
 }

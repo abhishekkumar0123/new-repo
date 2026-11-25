@@ -21,6 +21,8 @@ const links = [
   ["IP Reputation", "/ip-reputation"],
   ["URL Analyzer", "/url-analyzer"],
   ["Hash Lookup", "/hash-lookup"],
+  ["IOC Enrichment", "/ioc-enrichment"],
+  ["Certificate Inspector", "/certificate-inspector"],
   ["Certifications", "#certifications"],
   ["Contact", "#contact"],
 ];

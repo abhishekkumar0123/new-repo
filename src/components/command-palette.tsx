@@ -104,6 +104,18 @@ const COMMANDS: CommandItem[] = [
     subtitle: "IP investigation across threat intelligence sources",
     href: "/ip-reputation",
   },
+  {
+    id: "ioc-enrichment",
+    title: "IOC Enrichment",
+    subtitle: "Multi-source IOC investigation (IP, domain, URL, hash)",
+    href: "/ioc-enrichment",
+  },
+  {
+    id: "certificate-inspector",
+    title: "Certificate Inspector",
+    subtitle: "TLS certificate analysis via CT logs",
+    href: "/certificate-inspector",
+  },
 ];
 
 const typeSpeed = 30;

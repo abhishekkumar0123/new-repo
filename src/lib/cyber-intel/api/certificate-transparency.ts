@@ -247,3 +247,5 @@ export function processCertificatesForIntel(certificates: CtCertificate[]): {
     certificatesByIssuer: certsByIssuer,
   };
 }
+
+export { extractSanDomains, getCertificateStatus };

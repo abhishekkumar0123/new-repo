@@ -1,8 +1,33 @@
 export * from "./types";
-export * from "./types/ioc";
 export * from "./types/ip-reputation";
 export * from "./types/domain-intelligence";
 export * from "./types/url-analyzer";
+
+export {
+  type IOCType,
+  type HashType,
+  type HashSource,
+  type CertificateSource,
+  type HashVerdict,
+  type CertificateStatus,
+  type IOCInvestigatorStatus,
+  type IOCInvestigatorSourceStatus,
+  type HashLookupResult,
+  type HashLookupParams,
+  type HashLookupHistoryEntry,
+  type IOCEnrichmentResult,
+  type IOCEnrichmentParams,
+  type IOCEnrichmentHistoryEntry,
+  type CertificateInfo,
+  type CertificateInspectorParams,
+  type CertificateInspectorHistoryEntry,
+  detectHashType,
+  detectIOCType,
+  normalizeIOC,
+  getCertificateStatusColor,
+  getCertificateStatusLabel,
+  calculateCertificateStatus,
+} from "./types/ioc-investigator";
 
 export {
   fetchNvdCveList,
@@ -120,6 +145,28 @@ export {
   clearHashHistory,
   exportHashInvestigation,
 } from "./api/hash-lookup";
+
+export {
+  enrichIOC,
+  checkIOCEnrichmentStatus,
+  clearEnrichmentCache,
+  getCachedEnrichment,
+  addToEnrichmentHistory,
+  getEnrichmentHistory,
+  clearEnrichmentHistory,
+  exportEnrichmentInvestigation,
+} from "./api/ioc-enrichment";
+
+export {
+  inspectCertificate,
+  checkCertificateInspectorStatus,
+  clearCertCache,
+  getCachedCertificates,
+  addToCertHistory,
+  getCertHistory,
+  clearCertHistory,
+  exportCertInvestigation,
+} from "./api/certificate-inspector";
 
 export {
   analyzeUrlHeuristics,
