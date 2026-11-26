@@ -116,6 +116,13 @@ const COMMANDS: CommandItem[] = [
     subtitle: "TLS certificate analysis via CT logs",
     href: "/certificate-inspector",
   },
+  {
+    id: "security-news",
+    title: "Security News Center",
+    subtitle: "Live cybersecurity news, RSS feeds & advisories",
+    href: "/security-news",
+    icon: <span className="text-[#00ff91]">◆</span>,
+  },
 ];
 
 const typeSpeed = 30;

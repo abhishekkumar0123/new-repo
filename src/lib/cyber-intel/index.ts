@@ -228,3 +228,42 @@ export {
   formatCvssMetricLabel,
   type CvssVectorComponents,
 } from "./utils/cvss-vector";
+
+export {
+  fetchSecurityNews,
+  checkNewsSourcesStatus,
+  clearNewsCache,
+  getNewsProxyUrl,
+  getSourceDisplayName,
+  extractCveIds,
+  formatRelativeTime,
+  formatAbsoluteTime,
+} from "./api/security-news";
+
+export {
+  NEWS_CATEGORIES,
+  NEWS_SOURCES,
+  getNewsCategory,
+  getNewsCategoryLabel,
+  getNewsCategoryColor,
+  classifyNewsCategory,
+  getNewsSource,
+  NEWS_CACHE_TTL_MS,
+  NEWS_STALE_TTL_MS,
+  NEWS_BOOKMARKS_KEY,
+  NEWS_READ_KEY,
+  NEWS_RECENT_KEY,
+  type NewsCategoryId,
+  type NewsCategory,
+  type NewsSourceId,
+  type NewsSource,
+  type NewsArticle,
+  type NewsFeedStatus,
+  type NewsSourceStatus,
+  type NewsFeedResult,
+  type NewsAggregationResult,
+  type NewsQueryOptions,
+  type NewsSortOrder,
+  type NewsBookmarkEntry,
+  type NewsReadState,
+} from "./types/security-news";

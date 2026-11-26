@@ -23,6 +23,7 @@ const links = [
   ["Hash Lookup", "/hash-lookup"],
   ["IOC Enrichment", "/ioc-enrichment"],
   ["Certificate Inspector", "/certificate-inspector"],
+  ["Security News", "/security-news"],
   ["Certifications", "#certifications"],
   ["Contact", "#contact"],
 ];

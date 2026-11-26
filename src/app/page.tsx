@@ -34,6 +34,7 @@ import { UrlAnalyzerHomePreview } from "@/components/cyber-intel/url-analyzer-ho
 import { HashLookupHomePreview } from "@/components/cyber-intel/hash-lookup-home-preview";
 import { IOCEnrichmentHomePreview } from "@/components/cyber-intel/ioc-enrichment-home-preview";
 import { CertificateInspectorHomePreview } from "@/components/cyber-intel/certificate-inspector-home-preview";
+import { SecurityNewsHomePreview } from "@/components/cyber-intel/security-news-home-preview";
 
 const projects = [
   {
@@ -219,6 +220,8 @@ export default function Home() {
       <IOCEnrichmentHomePreview />
 
       <CertificateInspectorHomePreview />
+
+      <SecurityNewsHomePreview />
 
       <InteractiveTerminal
         profile={portfolio?.profile}
