@@ -33,7 +33,7 @@ export function getNewsProxyUrl(): string | undefined {
   return NEWS_FEED_PROXY_URL;
 }
 
-function stripHtml(input: string): string {
+export function stripHtml(input: string): string {
   if (!input) return "";
   let text = input;
   text = text.replace(/<script[\s\S]*?<\/script>/gi, " ");
@@ -58,7 +58,7 @@ function truncate(text: string, max: number): string {
   return text.slice(0, max - 1).trimEnd() + "…";
 }
 
-function sanitizeUrl(raw: string): string | null {
+export function sanitizeUrl(raw: string): string | null {
   if (!raw) return null;
   const trimmed = raw.trim();
   if (!/^https?:\/\//i.test(trimmed)) return null;

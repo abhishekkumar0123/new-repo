@@ -78,12 +78,24 @@ interface NvdApiResponse {
   resultsPerPage: number;
   startIndex: number;
   totalResults: number;
-  vulnerabilityConfigs: NvdCveItem[];
-  vulnerabilityItems: NvdCveItem[];
+  /** Current NVD 2.0 response key. */
+  vulnerabilities?: NvdCveItem[];
+  /** Legacy keys retained so cached/older integrations keep working. */
+  vulnerabilityConfigs?: NvdCveItem[];
+  vulnerabilityItems?: NvdCveItem[];
 }
 
-interface NvdCveByIdResponse {
-  vulnerabilityItems: NvdCveItem[];
+type NvdCveByIdResponse = NvdApiResponse;
+
+const NVD_MAX_ID_BATCH = 100;
+
+function getNvdItems(data: NvdApiResponse): NvdCveItem[] {
+  return (
+    data.vulnerabilities ??
+    data.vulnerabilityItems ??
+    data.vulnerabilityConfigs ??
+    []
+  );
 }
 
 let lastNvdRequestTime = 0;
@@ -250,13 +262,17 @@ function mapNvdItemToCveRecord(
   };
 }
 
-async function fetchNvdJson<T>(url: string): Promise<T> {
+async function fetchNvdJson<T>(
+  url: string,
+  options: { signal?: AbortSignal } = {},
+): Promise<T> {
   await throttleNvdRequest();
   const response = await fetch(url, {
     headers: {
       Accept: "application/json",
       "User-Agent": "abhishek-cybersecurity-portfolio/1.0",
     },
+    signal: options.signal,
   });
 
   if (!response.ok) {
@@ -280,8 +296,7 @@ export async function fetchNvdCveList(
   const url = buildNvdUrl(params);
   const data = await fetchNvdJson<NvdApiResponse>(url);
 
-  const items = data.vulnerabilityItems ?? data.vulnerabilityConfigs ?? [];
-  const cves = items.map(mapNvdItemToCveRecord);
+  const cves = getNvdItems(data).map(mapNvdItemToCveRecord);
 
   return {
     cves,
@@ -297,10 +312,46 @@ export async function fetchNvdCveById(cveId: string): Promise<CveRecord | null> 
   const url = `${NVD_BASE_URL}?cveId=${encodeURIComponent(cveId)}`;
   const data = await fetchNvdJson<NvdCveByIdResponse>(url);
 
-  const items = data.vulnerabilityItems ?? [];
+  const items = getNvdItems(data);
   if (items.length === 0) return null;
 
   return mapNvdItemToCveRecord(items[0]);
+}
+
+/**
+ * Fetch up to 100 CVE records in a single NVD request using the official
+ * `cveIds` parameter. Results are keyed by uppercase CVE ID.
+ */
+export async function fetchNvdCvesByIds(
+  cveIds: string[],
+  options: { signal?: AbortSignal } = {},
+): Promise<Map<string, CveRecord>> {
+  const uniqueIds = [
+    ...new Set(
+      cveIds
+        .map((id) => id.trim().toUpperCase())
+        .filter((id) => /^CVE-\d{4}-\d{4,7}$/.test(id)),
+    ),
+  ].slice(0, NVD_MAX_ID_BATCH);
+
+  const records = new Map<string, CveRecord>();
+  if (uniqueIds.length === 0) return records;
+
+  const params = new URLSearchParams({
+    cveIds: uniqueIds.join(","),
+    resultsPerPage: String(NVD_MAX_ID_BATCH),
+  });
+  const data = await fetchNvdJson<NvdApiResponse>(
+    `${NVD_BASE_URL}?${params.toString()}`,
+    options,
+  );
+
+  for (const item of getNvdItems(data)) {
+    const record = mapNvdItemToCveRecord(item);
+    records.set(record.cveId.toUpperCase(), record);
+  }
+
+  return records;
 }
 
 export async function checkNvdAvailability(): Promise<SourceStatus> {

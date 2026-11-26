@@ -11,6 +11,7 @@ import {
 export {
   fetchNvdCveList,
   fetchNvdCveById,
+  fetchNvdCvesByIds,
   checkNvdAvailability,
   type CveSearchParams,
 } from "./nvd";
@@ -21,6 +22,7 @@ export {
   checkCisaKevAvailability,
   clearKevCache,
   getCachedKevFeed,
+  getKevFeedWithStatus,
 } from "./cisa-kev";
 
 export {

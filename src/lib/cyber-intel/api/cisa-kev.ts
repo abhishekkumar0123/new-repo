@@ -3,6 +3,10 @@ import {
   KevInfo,
   SourceStatus,
 } from "../types";
+import {
+  fetchZeroDayProxyResource,
+  isZeroDayProxyConfigured,
+} from "./zero-day/proxy";
 
 const CISA_KEV_URL =
   "https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json";
@@ -27,10 +31,23 @@ interface CisaKevFeed {
   vulnerabilities: CisaKevVulnerability[];
 }
 
-let kevCache: { data: CisaKevFeed | null; fetchedAt: number | null } = {
-  data: null,
-  fetchedAt: null,
-};
+export type { CisaKevFeed, CisaKevVulnerability };
+
+export interface KevFeedResult {
+  feed: CisaKevFeed | null;
+  viaProxy: boolean;
+  error: string | null;
+  fetchedAt: string | null;
+  stale: boolean;
+}
+
+interface KevCacheEntry {
+  data: CisaKevFeed;
+  fetchedAt: number;
+  viaProxy: boolean;
+}
+
+let kevCache: KevCacheEntry | null = null;
 
 const KEV_CACHE_TTL_MS = 60 * 60 * 1000;
 
@@ -49,46 +66,121 @@ function parseKevInfo(vuln: CisaKevVulnerability | null): KevInfo {
     inKev: true,
     dateAdded: vuln.dateAdded ?? null,
     dueDate: vuln.dueDate ?? null,
-    ransomwareCampaign:
-      vuln.knownRansomwareCampaignUse === "Known" ? true : false,
+    ransomwareCampaign: vuln.knownRansomwareCampaignUse === "Known",
     source: "CISA Known Exploited Vulnerabilities Catalog",
   };
 }
 
-async function fetchKevFeed(): Promise<CisaKevFeed> {
-  const response = await fetch(CISA_KEV_URL, {
-    headers: {
-      Accept: "application/json",
-      "User-Agent": "abhishek-cybersecurity-portfolio/1.0",
-    },
-  });
+function parseKevFeed(text: string): CisaKevFeed {
+  const payload = JSON.parse(text) as Record<string, unknown>;
+  const vulnerabilities = Array.isArray(payload.vulnerabilities)
+    ? (payload.vulnerabilities as CisaKevVulnerability[]).filter(
+        (entry) => entry && typeof entry.cveID === "string",
+      )
+    : [];
 
-  if (!response.ok) {
-    throw new Error(
-      `CISA KEV API error: ${response.status} ${response.statusText}`,
-    );
+  if (vulnerabilities.length === 0) {
+    throw new Error("CISA KEV feed did not contain any vulnerabilities");
   }
 
-  return response.json();
+  return {
+    vulnerabilityCount:
+      typeof payload.vulnerabilityCount === "number"
+        ? payload.vulnerabilityCount
+        : vulnerabilities.length,
+    dateReleased:
+      typeof payload.dateReleased === "string" ? payload.dateReleased : "",
+    catalogVersion:
+      typeof payload.catalogVersion === "string" ? payload.catalogVersion : "",
+    vulnerabilities,
+  };
 }
 
-export async function getCachedKevFeed(): Promise<CisaKevFeed | null> {
-  const now = Date.now();
-  if (
-    kevCache.data &&
-    kevCache.fetchedAt &&
-    now - kevCache.fetchedAt < KEV_CACHE_TTL_MS
-  ) {
-    return kevCache.data;
+/**
+ * CISA KEV does not send Access-Control-Allow-Origin. Prefer the allowlisted
+ * Supabase proxy when configured, then fall back to a direct browser request
+ * for environments where CISA permits it.
+ */
+async function fetchKevFeed(): Promise<{ feed: CisaKevFeed; viaProxy: boolean }> {
+  const errors: string[] = [];
+
+  if (isZeroDayProxyConfigured()) {
+    try {
+      const proxied = await fetchZeroDayProxyResource("cisa-kev");
+      return { feed: parseKevFeed(proxied.text), viaProxy: true };
+    } catch (error) {
+      errors.push(
+        `Proxy: ${error instanceof Error ? error.message : "unknown error"}`,
+      );
+    }
   }
 
   try {
-    const data = await fetchKevFeed();
-    kevCache = { data, fetchedAt: now };
-    return data;
-  } catch {
-    return kevCache.data ?? null;
+    const response = await fetch(CISA_KEV_URL, {
+      headers: {
+        Accept: "application/json",
+        "User-Agent": "abhishek-cybersecurity-portfolio/1.0",
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status} ${response.statusText}`);
+    }
+
+    return { feed: parseKevFeed(await response.text()), viaProxy: false };
+  } catch (error) {
+    errors.push(
+      `Direct: ${error instanceof Error ? error.message : "unknown error"}`,
+    );
   }
+
+  throw new Error(errors.join("; ") || "Unable to fetch CISA KEV catalog");
+}
+
+export async function getKevFeedWithStatus(): Promise<KevFeedResult> {
+  const now = Date.now();
+
+  if (
+    kevCache &&
+    now - kevCache.fetchedAt < KEV_CACHE_TTL_MS
+  ) {
+    return {
+      feed: kevCache.data,
+      viaProxy: kevCache.viaProxy,
+      error: null,
+      fetchedAt: new Date(kevCache.fetchedAt).toISOString(),
+      stale: false,
+    };
+  }
+
+  try {
+    const { feed, viaProxy } = await fetchKevFeed();
+    kevCache = { data: feed, fetchedAt: now, viaProxy };
+    return {
+      feed,
+      viaProxy,
+      error: null,
+      fetchedAt: new Date(now).toISOString(),
+      stale: false,
+    };
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Unknown error";
+    if (kevCache) {
+      return {
+        feed: kevCache.data,
+        viaProxy: kevCache.viaProxy,
+        error: message,
+        fetchedAt: new Date(kevCache.fetchedAt).toISOString(),
+        stale: true,
+      };
+    }
+    return { feed: null, viaProxy: false, error: message, fetchedAt: null, stale: false };
+  }
+}
+
+export async function getCachedKevFeed(): Promise<CisaKevFeed | null> {
+  const result = await getKevFeedWithStatus();
+  return result.feed;
 }
 
 export async function enrichCveWithKev(
@@ -113,20 +205,20 @@ export async function enrichCveWithKev(
 
 export async function checkCisaKevAvailability(): Promise<SourceStatus> {
   try {
-    const feed = await getCachedKevFeed();
-    if (!feed) {
+    const result = await getKevFeedWithStatus();
+    if (!result.feed) {
       return {
         available: false,
         lastFetched: null,
-        error: "Unable to fetch CISA KEV catalog",
+        error: result.error ?? "Unable to fetch CISA KEV catalog",
         rateLimited: false,
       };
     }
 
     return {
       available: true,
-      lastFetched: new Date(kevCache.fetchedAt ?? 0).toISOString(),
-      error: null,
+      lastFetched: result.fetchedAt,
+      error: result.error,
       rateLimited: false,
     };
   } catch (error) {
@@ -163,5 +255,5 @@ export async function checkKevStatusForCve(
 }
 
 export function clearKevCache(): void {
-  kevCache = { data: null, fetchedAt: null };
+  kevCache = null;
 }

@@ -75,6 +75,12 @@ const COMMANDS: CommandItem[] = [
     href: "/kev",
   },
   {
+    id: "zero-day-tracker",
+    title: "Zero-Day Tracker",
+    subtitle: "Exploit intelligence, advisories, and vendor correlations",
+    href: "/zero-day-tracker",
+  },
+  {
     id: "threat-intelligence",
     title: "Threat Intelligence Center",
     subtitle: "IOCs, threat feeds, and security intelligence",

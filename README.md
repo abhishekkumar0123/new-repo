@@ -70,6 +70,10 @@ In Supabase Auth URL Configuration, add the GitHub Pages callback:
 - `https://abhishekkumar0123.github.io/new-repo/auth/callback/`
 - `https://abhishekkumar0123.github.io/new-repo/admin/reset-password/`
 
+## Zero-Day & Exploit Tracker
+
+`/zero-day-tracker` correlates CISA KEV, NVD, FIRST EPSS, GitHub advisories, Exploit-DB RSS, CISA advisories, and the existing security-news feeds in a defensive intelligence workspace. See [ZERO_DAY_TRACKER.md](./ZERO_DAY_TRACKER.md) for source evidence rules, proxy deployment, rate-limit handling, and limitations.
+
 ## Static hosting limitations
 
 - Contact submissions run directly through Supabase RLS. Server-side IP rate limiting is unavailable; the form uses honeypot protection and a browser session throttle. For stronger abuse protection, configure Supabase CAPTCHA, database quotas, or a third-party form protection service.

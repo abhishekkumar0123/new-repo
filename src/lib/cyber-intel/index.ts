@@ -1,4 +1,5 @@
 export * from "./types";
+export * from "./types/zero-day";
 export * from "./types/ip-reputation";
 export * from "./types/domain-intelligence";
 export * from "./types/url-analyzer";
@@ -32,6 +33,7 @@ export {
 export {
   fetchNvdCveList,
   fetchNvdCveById,
+  fetchNvdCvesByIds,
   checkNvdAvailability,
   checkCveIntelligenceStatus,
   type CveSearchParams,
@@ -43,6 +45,7 @@ export {
   checkCisaKevAvailability,
   clearKevCache,
   getCachedKevFeed,
+  getKevFeedWithStatus,
 } from "./api/cisa-kev";
 
 export {
@@ -236,9 +239,30 @@ export {
   getNewsProxyUrl,
   getSourceDisplayName,
   extractCveIds,
+  stripHtml,
+  sanitizeUrl,
   formatRelativeTime,
   formatAbsoluteTime,
 } from "./api/security-news";
+
+export {
+  fetchZeroDayDataset,
+  clearZeroDayCache,
+  fetchGithubAdvisories,
+  clearGithubAdvisoriesCache,
+  fetchExploitDbEntries,
+  clearExploitDbCache,
+  fetchCisaAdvisories,
+  clearCisaAdvisoriesCache,
+  classifyAlertText,
+  hasExploitationEvidence,
+  isZeroDayText,
+  getZeroDayProxyUrl,
+  isZeroDayProxyConfigured,
+  fetchZeroDayProxyResource,
+  buildZeroDayRecords,
+  buildZeroDayAlerts,
+} from "./api/zero-day";
 
 export {
   NEWS_CATEGORIES,

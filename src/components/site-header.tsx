@@ -16,6 +16,7 @@ const links = [
   ["Writeups", "#writeups"],
   ["Vulnerabilities", "/vulnerabilities"],
   ["KEV Intelligence", "/kev"],
+  ["Zero-Day Tracker", "/zero-day-tracker"],
   ["Threat Intelligence", "/threat-intelligence"],
   ["Domain Intelligence", "/domain-intelligence"],
   ["IP Reputation", "/ip-reputation"],
